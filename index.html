@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberDetective: El Árbol de la Verdad</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="game-container">
+        <!-- HUD / Sidebar -->
+        <aside id="detective-hud">
+            <header>
+                <h1>Cyber<span>Detective</span></h1>
+                <p id="level-indicator">Nivel 1</p>
+                <div id="score-display">Karma: 0</div>
+            </header>
+
+            <section id="case-file">
+                <h3>Archivo del Caso</h3>
+                <div class="content">
+                    <p id="scenario-text">Iniciando investigación...</p>
+                </div>
+            </section>
+
+            <section id="evidence-panel">
+                <h3>Evidencias (Toca para ver)</h3>
+                <ul id="evidence-list">
+                    <!-- Evidence items will be added here -->
+                </ul>
+            </section>
+
+            <section id="law-reference">
+                <h3>Código Penal Colombiano</h3>
+                <div class="content">
+                    <p id="law-text">Pendiente de hallazgo.</p>
+                </div>
+            </section>
+
+            <footer>
+                <button id="help-btn">Ayuda / Reglas</button>
+            </footer>
+        </aside>
+
+        <!-- Main Investigation Area -->
+        <main id="investigation-area">
+            <div id="canvas-container">
+                <canvas id="tree-canvas"></canvas>
+                <div id="tree-overlay">Árbol de la Verdad (AVL)</div>
+            </div>
+
+            <div id="interaction-overlay">
+                <div id="dialog-box">
+                    <div id="dialog-content">
+                        <p id="dialog-text">Bienvenido detective Alex. Valeria nos necesita.</p>
+                        <div id="classification-options" class="hidden">
+                            <!-- Buttons for classification will go here -->
+                        </div>
+                    </div>
+                    <button id="next-action-btn">Investigar</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal-container" class="hidden">
+        <div class="modal">
+            <h2 id="modal-title">Reglas del Juego</h2>
+            <div id="modal-body-content"></div>
+            <button id="close-modal">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Evidence Viewer Modal -->
+    <div id="evidence-viewer" class="hidden">
+        <div class="viewer-content">
+            <span id="close-viewer">&times;</span>
+            <img id="viewer-img" src="" alt="Evidencia">
+            <p id="viewer-caption"></p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/TreeStructure.js"></script>
+    <script src="js/Levels.js"></script>
+    <script src="js/VisualTree.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

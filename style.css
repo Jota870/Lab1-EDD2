@@ -1,0 +1,266 @@
+:root {
+    --bg-dark: #0a0c10;
+    --card-bg: rgba(20, 24, 30, 0.85);
+    --primary-neon: #00f2ff;
+    --secondary-neon: #7000ff;
+    --accent-red: #ff3c3c;
+    --text-main: #e0e6ed;
+    --text-dim: #94a3b8;
+    --border-color: rgba(0, 242, 255, 0.3);
+    --panel-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: 'Outfit', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+}
+
+#game-container {
+    display: flex;
+    height: 100vh;
+    padding: 20px;
+    gap: 20px;
+}
+
+/* Sidebar / HUD */
+#detective-hud {
+    width: 350px;
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    box-shadow: var(--panel-shadow);
+}
+
+h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+h1 span {
+    color: var(--primary-neon);
+    text-shadow: 0 0 10px var(--primary-neon);
+}
+
+#level-indicator {
+    color: var(--secondary-neon);
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+#score-display {
+    font-family: 'JetBrains Mono', monospace;
+    color: #ff9d00;
+    margin-top: 10px;
+    font-size: 0.8rem;
+}
+
+section h3 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+}
+
+.content {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 3px solid var(--primary-neon);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+ul#evidence-list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.evidence-tag {
+    background: var(--secondary-neon);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    animation: fadeIn 0.5s ease;
+}
+
+.evidence-tag:hover {
+    box-shadow: 0 0 15px var(--secondary-neon);
+    transform: scale(1.05);
+}
+
+button {
+    background: transparent;
+    border: 1px solid var(--primary-neon);
+    color: var(--primary-neon);
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: var(--primary-neon);
+    color: var(--bg-dark);
+    box-shadow: 0 0 15px var(--primary-neon);
+}
+
+/* Classification Buttons */
+#classification-options {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.crime-btn {
+    border: 1px solid var(--secondary-neon);
+    color: var(--secondary-neon);
+}
+
+.crime-btn:hover {
+    background: var(--secondary-neon);
+    color: white;
+    box-shadow: 0 0 15px var(--secondary-neon);
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Main Investigation area */
+#investigation-area {
+    flex: 1;
+    position: relative;
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://w0.peakpx.com/wallpaper/424/515/HD-wallpaper-dark-techno-city-cyberpunk-aesthetic-buildings.jpg') no-repeat center center;
+    background-size: cover;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#canvas-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#tree-canvas {
+    width: 100%;
+    height: 100%;
+}
+
+#interaction-overlay {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+}
+
+#dialog-box {
+    background: var(--card-bg);
+    border: 2px solid var(--primary-neon);
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(8px);
+}
+
+/* Evidence Viewer Modal */
+#evidence-viewer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.viewer-content {
+    position: relative;
+    max-width: 80%;
+    max-height: 80%;
+    text-align: center;
+}
+
+#viewer-img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 12px;
+    border: 2px solid var(--primary-neon);
+}
+
+#close-viewer {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    font-size: 3rem;
+    color: white;
+    cursor: pointer;
+}
+
+#viewer-caption {
+    margin-top: 15px;
+    font-size: 1.2rem;
+    color: var(--primary-neon);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Modal styles */
+#modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: var(--bg-dark);
+    border: 1px solid var(--secondary-neon);
+    padding: 40px;
+    border-radius: 20px;
+    max-width: 600px;
+}
