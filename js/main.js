@@ -1,7 +1,7 @@
 /**
  * main.js
  * Optimized game logic engine for CyberDetective Lab.
- * Now includes interactive classification and evidence viewing.
+ * Now includes interactive classification and robust evidence viewing.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateUI() {
         const currentLevel = gameState.getCurrentLevel();
-        levelIndicator.textContent = `CASO ACTUAL: ${currentLevel.title}`;
+        levelIndicator.textContent = `CRIMEN: ${currentLevel.title}`;
         scoreDisplay.textContent = `Karma: ${gameState.score}`;
         scenarioText.textContent = currentLevel.situation;
         
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Update evidence tags
         evidenceList.innerHTML = '';
-        gameState.collectedEvidence.forEach((evidence, index) => {
+        gameState.collectedEvidence.forEach((evidence) => {
             const li = document.createElement('li');
             li.className = 'evidence-tag';
             li.textContent = evidence;
@@ -80,11 +80,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentLevel = gameState.getCurrentLevel();
         
         if (selectedCrime === currentLevel.crime) {
-            // Correct choice
             gameState.score += 200;
             dialogText.textContent = `¡Correcto! Es un caso de ${currentLevel.crime}. ${currentLevel.feedback}`;
             
-            // Insert into AVL Tree
             gameState.tree.insert({
                 caseId: currentLevel.caseId,
                 type: currentLevel.crime,
@@ -102,9 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             updateUI();
         } else {
-            // Wrong choice
             gameState.score -= 50;
-            dialogText.textContent = `No exactamente. Alex dice: "Mira bien las evidencias. ${currentLevel.feedback.split('.')[0]}."`;
+            dialogText.textContent = `Error de análisis. Alex dice: "Revisa bien las pruebas. ${currentLevel.feedback.split('.')[0]}."`;
             updateUI();
         }
     }
@@ -114,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!gameState.nextLevel()) {
                 showFinalReport();
             } else {
-                dialogText.textContent = "Nuevo caso detectado. Valeria necesita tu ayuda.";
+                dialogText.textContent = "Nueva alerta detectada. Valeria necesita ayuda.";
                 updateUI();
             }
             return;
@@ -124,30 +121,34 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (gameState.currentStatus === 'INVESTIGATING') {
             currentLevel.evidence.forEach(ev => gameState.addEvidence(ev));
-            dialogText.textContent = "Evidencias recolectadas. Ahora analízalas en la barra lateral y clasifica el delito.";
+            dialogText.textContent = "Evidencias listas. Haz clic en ellas para inspeccionarlas antes de clasificar.";
             gameState.currentStatus = 'CLASSIFYING';
             updateUI();
         }
     }
 
-    function openEvidenceViewer(name, imageName) {
-        viewerImg.src = `assets/${imageName}`;
+    function openEvidenceViewer(name, imagePath) {
+        // Fallback for missing images
+        viewerImg.onerror = () => {
+            viewerImg.src = "https://via.placeholder.com/600x400/0a0c10/00f2ff?text=ARCHIVO+CONFIDENCIAL";
+        };
+        viewerImg.src = `assets/${imagePath}`;
         viewerCaption.textContent = `Evidencia: ${name}`;
         evidenceViewer.classList.remove('hidden');
     }
 
     function showFinalReport() {
         const inOrderCases = gameState.tree.getInOrder();
-        modalTitle.textContent = "REPORTE FINAL DE INVESTIGACIÓN";
+        modalTitle.textContent = "REPORTE FINAL - CASO VALERIA";
         
-        let reportHTML = `<p>Has reconstruido el árbol de la verdad con un puntaje de <strong>${gameState.score} puntos de Karma</strong>.</p>
+        let reportHTML = `<p>Investigación concluida con <strong>${gameState.score} puntos de Karma</strong>.</p>
                           <hr style="margin: 15px 0; border-color: var(--primary-neon);">`;
         
         inOrderCases.forEach(node => {
             reportHTML += `<div style="margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px;">
-                                <strong style="color:var(--primary-neon)">${node.type} (Severidad: ${node.gravity}/10)</strong><br>
+                                <strong style="color:var(--primary-neon)">${node.type} (Gravedad: ${node.gravity}/10)</strong><br>
                                 <span>Ley: ${node.law}</span><br>
-                                <span style="color: var(--accent-red)">Consecuencia: ${node.penalty}</span>
+                                <span style="color: var(--accent-red)">Sanción: ${node.penalty}</span>
                            </div>`;
         });
         
@@ -163,10 +164,10 @@ document.addEventListener('DOMContentLoaded', () => {
     helpBtn.addEventListener('click', () => {
         modalTitle.textContent = "Manual del CyberDetective";
         modalBodyContent.innerHTML = `
-            <p>1. <strong>Investigar:</strong> Recolecta las pruebas digitales.</p>
-            <p>2. <strong>Analizar:</strong> Haz clic en las etiquetas de la izquierda para ver las capturas de pantalla.</p>
-            <p>3. <strong>Clasificar:</strong> Elige el delito correcto según la ley colombiana.</p>
-            <p>4. <strong>Árbol AVL:</strong> Cada acierto construye un árbol que se auto-balancea para optimizar la base de datos de la fiscalía.</p>
+            <p>1. <strong>Investigar:</strong> Recolecta pruebas digitales.</p>
+            <p>2. <strong>Inspeccionar:</strong> Toca las etiquetas para ver las capturas en grande.</p>
+            <p>3. <strong>Analizar:</strong> Elige el delito correcto basándote en la ley colombiana.</p>
+            <p>4. <strong>Árbol AVL:</strong> Cada evidencia se añade a la base de datos visual para optimizar la búsqueda.</p>
         `;
         modalContainer.classList.remove('hidden');
     });

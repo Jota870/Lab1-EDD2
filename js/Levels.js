@@ -12,7 +12,7 @@ const LEVELS = [
         evidence: ["Captura de pantalla", "ID de usuario @Anonimo123"],
         image: "chat_bullying_screenshot.png",
         options: ["Injuria", "Calumnia", "Amenaza"],
-        feedback: "La injuria se refiere a las ofensas que deshonran a alguien directamente, mientras que la calumnia es una acusación falsa de un delito."
+        feedback: "La injuria se refiere a las ofensas que deshonran a alguien directamente (Art. 220)."
     },
     {
         id: 2,
@@ -27,7 +27,7 @@ const LEVELS = [
         evidence: ["Publicación viral", "Testimonio del iniciador"],
         image: "viral_rumor_post.png",
         options: ["Injuria", "Calumnia", "Acoso"],
-        feedback: "Al difundir rumores falsos para dañar la reputación, estamos ante un caso de calumnia bajo el Art. 221."
+        feedback: "Difundir rumores falsos para dañar la reputación es Calumnia (Art. 221)."
     },
     {
         id: 3,
@@ -42,7 +42,7 @@ const LEVELS = [
         evidence: ["Perfil falso", "Dirección IP", "Foto suplantada"],
         image: "fake_profile_screenshot.png",
         options: ["Hurto calificado", "Suplantación de identidad", "Injuria"],
-        feedback: "Utilizar la identidad de otro sin su consentimiento es un delito informático grave bajo la Ley 1273 de 2009."
+        feedback: "Utilizar la identidad de otro sin su consentimiento es un delito informático (Ley 1273)."
     },
     {
         id: 4,
@@ -57,7 +57,7 @@ const LEVELS = [
         evidence: ["Log de ataques simultáneos", "Patrón de red", "ID del cabecilla"],
         image: "coordinated_attack_logs.png",
         options: ["Hurto", "Hostigamiento digital", "Suplantación"],
-        feedback: "El hostigamiento digital coordinado busca intimidar y degradar a la víctima repetidamente. Puede ser causal de cárcel."
+        feedback: "El hostigamiento digital coordinado busca intimidar y degradar repetidamente."
     }
 ];
 
