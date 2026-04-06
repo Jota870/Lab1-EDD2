@@ -2,7 +2,7 @@ const LEVELS = [
     {
         id: 1,
         title: "Nivel 1 - Las primeras señales",
-        situation: "Valeria comienza a recibir mensajes ofensivos en redes sociales. Al principio parecen bromas aisladas, pero se repiten constantemente.",
+        situation: "Valeria comienza a recibir mensajes ofensivos en redes sociales. Al principio parecen bromas aisladas, pero se repiten constantemente afectando su honor.",
         objective: "Recolectar capturas, identificar al usuario y clasificar la agresión.",
         crime: "Injuria",
         law: "Artículo 220 del Código Penal Colombiano",
@@ -11,7 +11,7 @@ const LEVELS = [
         caseId: 300,
         evidence: ["Captura de pantalla", "ID de usuario @Anonimo123"],
         image: "chat_bullying_screenshot.png",
-        options: ["Injuria", "Calumnia", "Amenaza"],
+        options: ["Injuria", "Calumnia", "Amenaza", "Acoso", "Hostigamiento", "Daño a la honra"],
         feedback: "La injuria se refiere a las ofensas que deshonran a alguien directamente (Art. 220)."
     },
     {
@@ -26,7 +26,7 @@ const LEVELS = [
         caseId: 500,
         evidence: ["Post de chisme viral", "Foto de Valeria (perfil)"],
         image: "valeria_oficial.png",
-        options: ["Injuria", "Calumnia", "Acoso"],
+        options: ["Calumnia", "Injuria", "Difamación", "Falso Testimonio", "Fraude Académico", "Injuria por vía de hecho"],
         feedback: "Imputar falsamente una conducta deshonrosa (como una relación prohibida) es Calumnia (Art. 221)."
     },
     {
@@ -41,13 +41,13 @@ const LEVELS = [
         caseId: 800,
         evidence: ["Perfil falso", "Dirección IP", "Foto suplantada"],
         image: "valeria_oficial.png",
-        options: ["Hurto calificado", "Suplantación de identidad", "Injuria"],
+        options: ["Suplantación de identidad", "Hurto de datos", "Estafa", "Acceso Abusivo", "Falsedad en documento", "Suplantación agravada"],
         feedback: "Utilizar la identidad de otro sin su consentimiento es un delito informático (Ley 1273)."
     },
     {
         id: 4,
         title: "Nivel 4 - El ataque coordinado",
-        situation: "El acoso se intensifica. Varias cuentas comienzan a atacar a Valeria simultáneamente con comentarios humillantes.",
+        situation: "El acoso se intensifica. Varias cuentas comienzan a atacar a Valeria simultáneamente con comentarios humillantes y amenazas directas.",
         objective: "Identificar cuentas vinculadas, patrones de comportamiento y al responsable principal.",
         crime: "Hostigamiento digital",
         law: "Amenazas y hostigamiento reiterado",
@@ -56,7 +56,7 @@ const LEVELS = [
         caseId: 1000,
         evidence: ["Log de ataques simultáneos", "Patrón de red", "ID del cabecilla"],
         image: "valeria_oficial.png",
-        options: ["Hurto", "Hostigamiento digital", "Suplantación"],
+        options: ["Hostigamiento digital", "Amenazas", "Acoso Colectivo", "Ciberbullying", "Intimidación", "Extorsión"],
         feedback: "El hostigamiento digital coordinado busca intimidar y degradar repetidamente."
     }
 ];

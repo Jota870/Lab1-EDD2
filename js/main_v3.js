@@ -170,15 +170,24 @@ document.addEventListener('DOMContentLoaded', () => {
     closeViewer.addEventListener('click', () => evidenceViewer.classList.add('hidden'));
     
     helpBtn.addEventListener('click', () => {
-        modalTitle.textContent = "MANUAL DE LEYES - CYBERDETECTIVE";
+        modalTitle.textContent = "CÓDIGO DIGITAL: MANUAL DEL DETECTIVE";
         modalBodyContent.innerHTML = `
-            <div style="text-align: left; font-size: 0.9rem; line-height: 1.6;">
-                <p><strong>1. Injuria (Art. 220):</strong> El que haga a otra persona imputaciones deshonrosas incurrirá en las penas previstas por la ley.</p>
-                <p><strong>2. Calumnia (Art. 221):</strong> El que impute falsamente a otro una conducta típica (delito).</p>
-                <p><strong>3. Suplantación de Identidad:</strong> Acción de hacerse pasar por otra persona, mediante el uso de sus datos o imagen, con el fin de causar un perjuicio o beneficio ilícito.</p>
-                <p><strong>4. Hostigamiento Digital:</strong> Conducta sistemática de acoso, intimidación o asedio contra una persona mediante el uso de tecnologías de la información.</p>
-                <hr style="border-color: #444; margin: 15px 0;">
-                <p style="font-style: italic; color: var(--primary-neon);">Analiza bien la evidencia: ¿Es un insulto (Injuria) o una acusación de un delito falso (Calumnia)?</p>
+            <div style="text-align: left; font-size: 0.8rem; line-height: 1.4; max-height: 450px; overflow-y: auto; padding-right: 10px;">
+                <p><strong>1. Injuria (Art. 220):</strong> Imputaciones deshonrosas que afectan el buen nombre.</p>
+                <p><strong>2. Calumnia (Art. 221):</strong> Imputación falsa de una conducta que constituye un delito.</p>
+                <p><strong>3. Suplantación de Identidad:</strong> Hacerse pasar por otro para causar daño o beneficio ilícito.</p>
+                <p><strong>4. Hostigamiento Digital:</strong> Conducta sistemática de acoso, intimidación o asedio mediante tecnologías.</p>
+                <p><strong>5. Amenaza (Art. 347):</strong> Acto de intimidar a alguien con el anuncio de un mal futuro, grave y posible.</p>
+                <p><strong>6. Hurto de Datos:</strong> Apoderarse de información digital ajena para beneficio personal.</p>
+                <p><strong>7. Estafa Digital:</strong> Engañar a alguien para obtener un provecho económico ilícito.</p>
+                <p><strong>8. Acoso Colectivo (Mobbing):</strong> Ataque coordinado de varias personas para degradar a un individuo.</p>
+                <p><strong>9. Falso Testimonio:</strong> Declarar algo falso bajo gravedad de juramento.</p>
+                <p><strong>10. Difamación:</strong> Acción de desacreditar a alguien, de palabra o por escrito, publicando cosas contra su buena opinión y fama.</p>
+                <p><strong>11. Acceso Abusivo (Art. 269A):</strong> Acceder a un sistema informático sin autorización.</p>
+                <p><strong>12. Fraude Académico:</strong> Alteración o uso de información falsa para obtener mérito escolar.</p>
+                <p><strong>13. Intimidación:</strong> Insuflar miedo de forma constante a través de cualquier medio digital.</p>
+                <hr style="border-color: #444; margin: 10px 0;">
+                <p style="color: var(--primary-neon); text-align: center; font-size: 0.7rem;"><em>INVESTIGACIÓN: Compara la definición técnica con las pruebas recolectadas.</em></p>
             </div>
         `;
         modalContainer.classList.remove('hidden');
