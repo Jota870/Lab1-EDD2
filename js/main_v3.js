@@ -114,25 +114,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function openEvidenceViewer(name, level) {
-        // NIVEL 2: RUMOR SOBRE EL PROFESOR (CACHE BUSTED IMAGE)
+        // NIVEL 2: Custom Social Post for Valeria (Relationship rumor)
         if (level.id === 2) {
             viewerImg.classList.add('hidden');
             dynamicPost.classList.remove('hidden');
             dynamicPost.innerHTML = `
                 <div class="post-header">
-                    <div style="width:40px; height:40px; background:#444; border-radius:50%; display:flex; justify-content:center; align-items:center;">📂</div>
+                    <div style="width:40px; height:40px; background: linear-gradient(135deg, #00f2ff, #7000ff); border-radius:50%; display:flex; justify-content:center; align-items:center; font-weight:bold; color:white; font-size:1.2rem;">B</div>
                     <div>
-                        <div class="post-user">@Chismes_Escolares_Oficial</div>
-                        <div style="font-size:0.7rem; color:#666;">hace 10 minutos</div>
+                        <div class="post-user">@Chismes_Baq_2026</div>
+                        <div style="font-size:0.7rem; color:#666;">hace 10 minutos • Barranquilla</div>
                     </div>
                 </div>
                 <div class="post-content">
-                    "¡ESCÁNDALO! Dicen que <strong>Valeria</strong> tiene algo con el profesor de matemáticas para que le pase la materia. ¿Ustedes qué creen? 😱🔥"
+                    "¡ESCÁNDALO EN EL COLEGIO! Dicen que <strong>Valeria</strong> tiene algo con el profesor de matemáticas para que le pase la materia. ¿Ustedes qué creen? 😱🔥"
                 </div>
-                <img src="assets/valeria_oficial.png" class="social-img" style="width:100%; border-radius:8px;">
-                <div class="falso-stamp">FALSO</div>
+                <div style="width:100%; height:300px; background:rgba(0,0,0,0.4); border-radius:12px; display:flex; flex-direction:column; justify-content:center; align-items:center; border: 1px solid #334155; position:relative; overflow:hidden;">
+                    <div style="width:120px; height:120px; background:url('assets/valeria_oficial.png') no-repeat center top; background-size: 200%; border-radius:50%; border: 4px solid var(--primary-neon);"></div>
+                    <div style="margin-top:15px; color:var(--text-main); font-weight:bold; font-size:1.1rem;">Valeria_Oficial</div>
+                    <div style="color:var(--text-dim); font-size:0.8rem;">Estudiante • NetCity High</div>
+                    <div class="falso-stamp">FALSO</div>
+                </div>
+                <div style="margin-top:10px; font-size:0.8rem; color:#888;">❤️ 2,840 likes • 💬 142 comentarios</div>
             `;
-            viewerCaption.textContent = `Evidencia: Post de Calumnia Viral`;
+            viewerCaption.textContent = `Evidencia: Post de Calumnia (@Chismes_Baq)`;
         } else {
             dynamicPost.classList.add('hidden');
             viewerImg.classList.remove('hidden');
@@ -163,5 +168,21 @@ document.addEventListener('DOMContentLoaded', () => {
     nextActionBtn.addEventListener('click', triggerNextAction);
     closeModal.addEventListener('click', () => modalContainer.classList.add('hidden'));
     closeViewer.addEventListener('click', () => evidenceViewer.classList.add('hidden'));
+    
+    helpBtn.addEventListener('click', () => {
+        modalTitle.textContent = "MANUAL DE LEYES - CYBERDETECTIVE";
+        modalBodyContent.innerHTML = `
+            <div style="text-align: left; font-size: 0.9rem; line-height: 1.6;">
+                <p><strong>1. Injuria (Art. 220):</strong> El que haga a otra persona imputaciones deshonrosas incurrirá en las penas previstas por la ley.</p>
+                <p><strong>2. Calumnia (Art. 221):</strong> El que impute falsamente a otro una conducta típica (delito).</p>
+                <p><strong>3. Suplantación de Identidad:</strong> Acción de hacerse pasar por otra persona, mediante el uso de sus datos o imagen, con el fin de causar un perjuicio o beneficio ilícito.</p>
+                <p><strong>4. Hostigamiento Digital:</strong> Conducta sistemática de acoso, intimidación o asedio contra una persona mediante el uso de tecnologías de la información.</p>
+                <hr style="border-color: #444; margin: 15px 0;">
+                <p style="font-style: italic; color: var(--primary-neon);">Analiza bien la evidencia: ¿Es un insulto (Injuria) o una acusación de un delito falso (Calumnia)?</p>
+            </div>
+        `;
+        modalContainer.classList.remove('hidden');
+    });
+
     updateUI();
 });
