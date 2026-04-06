@@ -16,18 +16,18 @@ const LEVELS = [
     },
     {
         id: 2,
-        title: "Nivel 2 - El rumor viral",
-        situation: "Empiezan a circular publicaciones falsas sobre Valeria en redes sociales. Otros estudiantes comparten rumores que dañan su reputación.",
-        objective: "Identificar la publicación original, rastrear al iniciador y determinar veracidad.",
+        title: "Nivel 2 - El rumor difamatorio",
+        situation: "Un mensaje anónimo se vuelve viral en el grupo del colegio: aseguran que Valeria tiene una relación secreta con uno de los profesores para subir sus notas.",
+        objective: "Analizar el post viral, identificar la falsedad y clasificar el delito.",
         crime: "Calumnia",
         law: "Artículo 221 del Código Penal Colombiano",
-        penalty: "Multas o sanciones por difundir acusaciones falsas.",
+        penalty: "Multas o sanciones por imputar falsamente una conducta deshonrosa.",
         gravity: 5,
         caseId: 500,
-        evidence: ["Publicación viral", "Testimonio del iniciador"],
-        image: "viral_rumor_post.png",
+        evidence: ["Post de chisme viral", "Foto de Valeria (perfil)"],
+        image: "valeria_oficial.png",
         options: ["Injuria", "Calumnia", "Acoso"],
-        feedback: "Difundir rumores falsos para dañar la reputación es Calumnia (Art. 221)."
+        feedback: "Imputar falsamente una conducta deshonrosa (como una relación prohibida) es Calumnia (Art. 221)."
     },
     {
         id: 3,
@@ -40,7 +40,7 @@ const LEVELS = [
         gravity: 8,
         caseId: 800,
         evidence: ["Perfil falso", "Dirección IP", "Foto suplantada"],
-        image: "fake_profile_screenshot.png",
+        image: "valeria_oficial.png",
         options: ["Hurto calificado", "Suplantación de identidad", "Injuria"],
         feedback: "Utilizar la identidad de otro sin su consentimiento es un delito informático (Ley 1273)."
     },
@@ -55,7 +55,7 @@ const LEVELS = [
         gravity: 10,
         caseId: 1000,
         evidence: ["Log de ataques simultáneos", "Patrón de red", "ID del cabecilla"],
-        image: "coordinated_attack_logs.png",
+        image: "valeria_oficial.png",
         options: ["Hurto", "Hostigamiento digital", "Suplantación"],
         feedback: "El hostigamiento digital coordinado busca intimidar y degradar repetidamente."
     }

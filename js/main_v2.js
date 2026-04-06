@@ -1,6 +1,6 @@
 /**
- * main.js
- * CyberDetective Lab - Optimized logic for dynamic evidence and AVL tree.
+ * main.js - v1.4 Final (Drone Removal & Cache Busting)
+ * CyberDetective - Case: Valeria
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -34,10 +34,10 @@ document.addEventListener('DOMContentLoaded', () => {
         scenarioText.textContent = currentLevel.situation;
         
         if (gameState.currentStatus === 'INVESTIGATING') {
-            lawText.textContent = "Estado: Analizando evidencias de Valeria.";
+            lawText.textContent = "Analizando evidencias digitales de Valeria.";
             classificationOptions.classList.add('hidden');
             nextActionBtn.classList.remove('hidden');
-            nextActionBtn.textContent = "Recolectar Evidencia Digital";
+            nextActionBtn.textContent = "Examinar Evidencia";
         } else if (gameState.currentStatus === 'CLASSIFYING') {
             lawText.textContent = "¿Bajo qué ley colombiana clasificamos este delito?";
             nextActionBtn.classList.add('hidden');
@@ -72,10 +72,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleClassification(selectedCrime) {
         const currentLevel = gameState.getCurrentLevel();
-        
         if (selectedCrime === currentLevel.crime) {
             gameState.score += 200;
-            dialogText.textContent = `¡Correcto! Es un delito de ${currentLevel.crime}. Requisitos del nodo cumplidos.`;
+            dialogText.textContent = `¡Correcto! Es ${currentLevel.crime}. El Árbol AVL se actualiza.`;
             
             gameState.tree.insert({
                 caseId: currentLevel.caseId,
@@ -89,8 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
             gameState.currentStatus = 'FINISHED_LEVEL';
             classificationOptions.classList.add('hidden');
             nextActionBtn.classList.remove('hidden');
-            nextActionBtn.textContent = (gameState.currentLevelIndex === LEVELS.length - 1) ? "Generar Reporte Final" : "Siguiente Caso";
-            
+            nextActionBtn.textContent = (gameState.currentLevelIndex === LEVELS.length - 1) ? "Reporte Final" : "Siguiente Caso";
             updateUI();
         } else {
             gameState.score -= 50;
@@ -101,47 +99,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function triggerNextAction() {
         if (gameState.currentStatus === 'FINISHED_LEVEL') {
-            if (!gameState.nextLevel()) {
-                showFinalReport();
-            } else {
-                dialogText.textContent = "El sistema de Alex detectó una nueva amenaza contra Valeria.";
-                updateUI();
-            }
+            if (!gameState.nextLevel()) showFinalReport();
+            else { dialogText.textContent = "Nueva amenaza detectada."; updateUI(); }
             return;
         }
 
         const currentLevel = gameState.getCurrentLevel();
         if (gameState.currentStatus === 'INVESTIGATING') {
             currentLevel.evidence.forEach(ev => gameState.addEvidence(ev));
-            dialogText.textContent = "Evidencias listas. Toca las etiquetas para inspeccionarlas antes de dar tu veredicto legal.";
+            dialogText.textContent = "Evidencias listas. Toca las etiquetas para verlas.";
             gameState.currentStatus = 'CLASSIFYING';
             updateUI();
         }
     }
 
     function openEvidenceViewer(name, level) {
-        // NIVEL 2: Custom Social Post for Valeria (replacing Drone News)
+        // NIVEL 2: RUMOR SOBRE EL PROFESOR (CACHE BUSTED IMAGE)
         if (level.id === 2) {
             viewerImg.classList.add('hidden');
             dynamicPost.classList.remove('hidden');
             dynamicPost.innerHTML = `
                 <div class="post-header">
-                    <div class="post-user">@Anonimo_Escolar</div>
-                    <div>• hace 2 horas</div>
+                    <div style="width:40px; height:40px; background:#444; border-radius:50%; display:flex; justify-content:center; align-items:center;">📂</div>
+                    <div>
+                        <div class="post-user">@Chismes_Escolares_Oficial</div>
+                        <div style="font-size:0.7rem; color:#666;">hace 10 minutos</div>
+                    </div>
                 </div>
                 <div class="post-content">
-                    "¿Ya vieron lo que anda diciendo de Valeria? Dicen que se robó los exámenes de la oficina. ¡Qué vergüenza! 🙄 #NetCityHigh #Expuesta"
+                    "¡ESCÁNDALO! Dicen que <strong>Valeria</strong> tiene algo con el profesor de matemáticas para que le pase la materia. ¿Ustedes qué creen? 😱🔥"
                 </div>
-                <img src="assets/viral_rumor_post.png" class="social-img">
+                <img src="assets/valeria_oficial.png" class="social-img" style="width:100%; border-radius:8px;">
                 <div class="falso-stamp">FALSO</div>
             `;
-            viewerCaption.textContent = `Analizando Rumor Viral: ${name}`;
+            viewerCaption.textContent = `Evidencia: Post de Calumnia Viral`;
         } else {
             dynamicPost.classList.add('hidden');
             viewerImg.classList.remove('hidden');
-            viewerImg.onerror = () => {
-                viewerImg.src = "https://via.placeholder.com/600x400/0a0c10/00f2ff?text=ARCHIVO+EVIDENCIA";
-            };
+            viewerImg.onerror = () => { viewerImg.src = "https://via.placeholder.com/600x400/0a0c10/00f2ff?text=ARCHIVO"; };
             viewerImg.src = `assets/${level.image}`;
             viewerCaption.textContent = `Analizando: ${name}`;
         }
@@ -151,20 +146,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function showFinalReport() {
         const inOrderNodes = gameState.tree.getInOrder();
         modalTitle.textContent = "REPORTE TÉCNICO DE INVESTIGACIÓN (Árbol AVL)";
-        
-        let reportHTML = `<p>Casos organizados en el árbol por <strong>Gravedad del Delito</strong>.</p>
-                          <hr style="margin: 15px 0; border-color: var(--primary-neon);">`;
-        
+        let reportHTML = `<p>Casos organizados en el árbol por <strong>Gravedad del Delito</strong>.</p><hr style="margin: 15px 0; border-color: var(--primary-neon);">`;
         inOrderNodes.forEach(node => {
             reportHTML += `<div style="margin-bottom: 25px; border-bottom: 1px solid #333; padding-bottom: 15px;">
-                                <p><strong>1. ID del caso:</strong> ${node.caseId}</p>
-                                <p><strong>2. Tipo de acoso:</strong> ${node.type}</p>
-                                <p><strong>3. Evidencias:</strong> ${node.evidence.join(", ")}</p>
-                                <p><strong>4. Ley colombiana:</strong> ${node.law}</p>
-                                <p style="color:var(--accent-red)"><strong>5. Posible pena:</strong> ${node.penalty}</p>
-                           </div>`;
+                <p><strong>1. ID del caso:</strong> ${node.caseId}</p>
+                <p><strong>2. Tipo de acoso:</strong> ${node.type}</p>
+                <p><strong>3. Evidencias:</strong> ${node.evidence.join(", ")}</p>
+                <p><strong>4. Ley colombiana:</strong> ${node.law}</p>
+                <p style="color:var(--accent-red)"><strong>5. Posible pena:</strong> ${node.penalty}</p>
+            </div>`;
         });
-        
         modalBodyContent.innerHTML = reportHTML;
         modalContainer.classList.remove('hidden');
     }
@@ -172,17 +163,5 @@ document.addEventListener('DOMContentLoaded', () => {
     nextActionBtn.addEventListener('click', triggerNextAction);
     closeModal.addEventListener('click', () => modalContainer.classList.add('hidden'));
     closeViewer.addEventListener('click', () => evidenceViewer.classList.add('hidden'));
-    
-    helpBtn.addEventListener('click', () => {
-        modalTitle.textContent = "Reglas del Detective Digital";
-        modalBodyContent.innerHTML = `
-            <p>1. <strong>Investigar:</strong> Hazte con las evidencias del nivel.</p>
-            <p>2. <strong>Inspeccionar:</strong> Haz clic en la evidencia para verla de cerca.</p>
-            <p>3. <strong>Veredicto:</strong> Elige el tipo de delito basado en la ley colombiana.</p>
-            <p>4. <strong>Árbol de Casos:</strong> Cada acierto inserta un nodo equilibrado (AVL) con toda la información técnica.</p>
-        `;
-        modalContainer.classList.remove('hidden');
-    });
-
     updateUI();
 });
