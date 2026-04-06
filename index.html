@@ -6,18 +6,7 @@
     <title>CyberDetective: El Árbol de la Verdad - EDICIÓN PRO</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-dark: #0a0c10;
-            --card-bg: rgba(20, 24, 30, 0.85);
-            --primary-neon: #00f2ff;
-            --secondary-neon: #7000ff;
-            --accent-red: #ff3c3c;
-            --text-main: #e0e6ed;
-            --text-dim: #94a3b8;
-            --border-color: rgba(0, 242, 255, 0.3);
-            --panel-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
-        }
-
+        :root { --bg-dark: #0a0c10; --card-bg: rgba(20, 24, 30, 0.85); --primary-neon: #00f2ff; --secondary-neon: #7000ff; --accent-red: #ff3c3c; --text-main: #e0e6ed; --text-dim: #94a3b8; --border-color: rgba(0, 242, 255, 0.3); --panel-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8); }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background-color: var(--bg-dark); color: var(--text-main); font-family: 'Outfit', sans-serif; overflow: hidden; height: 100vh; }
         #game-container { display: flex; height: 100vh; padding: 10px; gap: 15px; flex-wrap: wrap; }
@@ -47,8 +36,7 @@
         #viewer-img { max-width: 100%; max-height: 80vh; border-radius: 8px; border: 2px solid var(--primary-neon); object-fit: contain; }
         #close-viewer { position: absolute; top: -45px; right: 0; font-size: 2.5rem; color: white; cursor: pointer; }
         #viewer-caption { margin-top: 15px; font-size: 1.1rem; color: var(--primary-neon); font-weight: 600; }
-        #dynamic-post { background: #000; width: 450px; max-width: 95vw; border-radius: 12px; border: 1px solid #333; text-align: left; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.8); margin: 10px auto; animation: fadeIn 0.5s ease; color: white; }
-        .falso-stamp { position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%) rotate(-15deg); border: 8px solid #ff3c3c; color: #ff3c3c; font-size: 5rem; font-weight: 900; padding: 10px 30px; text-transform: uppercase; border-radius: 12px; z-index: 50; opacity: 0.9; background: rgba(0, 0, 0, 0.5); pointer-events: none; letter-spacing: 5px; }
+        #dynamic-post { background: #000; width: 450px; max-width: 95vw; border-radius: 12px; border: 1px solid #333; text-align: left; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.8); margin: 10px auto; animation: fadeIn 0.5s ease; color: white; overflow: hidden; }
         #modal-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); display: flex; justify-content: center; align-items: center; z-index: 1000; }
         .modal { background: var(--bg-dark); border: 1px solid var(--secondary-neon); padding: 30px; border-radius: 16px; max-width: 90%; max-height: 85vh; overflow-y: auto; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -58,16 +46,16 @@
     <div id="game-container">
         <aside id="detective-hud">
             <header>
-                <h1>Cyber<span>Detective PRO</span></h1>
+                <h1>Cyber<span>Detective PRO vFinal</span></h1>
                 <div id="level-indicator">INICIANDO...</div>
                 <div id="score-display">Karma: 0</div>
             </header>
-            <section><div id="scenario-text" class="content">...</div></section>
-            <section><ul id="evidence-list"></ul></section>
-            <section>
+            <section id="case-file"><h3>EXPEDIENTE</h3><div id="scenario-text" class="content">...</div></section>
+            <section id="evidence-collector"><h3>PRUEBAS</h3><ul id="evidence-list"></ul></section>
+            <section id="legal-actions">
                 <div id="law-text" class="content">Analizando...</div>
                 <div id="classification-options" class="hidden"></div>
-                <button id="next-action-btn" style="width: 100%; margin-top: 15px;">Empezar</button>
+                <button id="next-action-btn" style="width: 100%; margin-top: 15px;">Empezar Investigación</button>
             </section>
             <button id="help-btn" style="margin-top: auto;">Manual Legal</button>
         </aside>
@@ -77,7 +65,7 @@
         </main>
     </div>
 
-    <div id="modal-container" class="hidden"><div class="modal"><h2 id="modal-title"></h2><div id="modal-body-content"></div><button id="close-modal" style="width: 100%;">Cerrar</button></div></div>
+    <div id="modal-container" class="hidden"><div class="modal"><h2 id="modal-title"></h2><div id="modal-body-content" style="margin:20px 0;"></div><button id="close-modal" style="width: 100%;">Cerrar</button></div></div>
     <div id="evidence-viewer" class="hidden">
         <div class="viewer-content">
             <span id="close-viewer">&times;</span>
@@ -113,20 +101,22 @@
             function upd() {
                 const l = LEVELS[gs.idx];
                 elements.li.textContent = l.title; elements.sd.textContent = `Karma: ${gs.score}`; elements.st.textContent = l.situation;
-                if (gs.status === 'INVESTIGATING') { elements.lt.textContent = "Buscando pruebas..."; elements.co.classList.add('hidden'); elements.nb.classList.remove('hidden'); elements.nb.textContent = "Analizar"; }
-                else if (gs.status === 'CLASSIFYING') { elements.lt.textContent = "¿Qué delito es?"; elements.nb.classList.add('hidden'); elements.co.classList.remove('hidden'); elements.co.innerHTML = ''; l.options.forEach(o => { const b = document.createElement('button'); b.className = 'crime-btn'; b.textContent = o; b.onclick = () => { if(o === l.crime) { gs.score+=200; gs.tree.insert({caseId: l.caseId, type: l.crime, gravity: l.gravity, evidence: l.evidence, law: l.law, penalty: l.penalty}); gs.status = 'DONE'; elements.nb.classList.remove('hidden'); elements.nb.textContent = (gs.idx === 3) ? "Reporte" : "Siguiente"; elements.dt.textContent = "¡Correcto!"; upd(); } else { gs.score-=50; elements.dt.textContent = "Error."; } }; elements.co.appendChild(b); }); }
+                if (gs.status === 'INVESTIGATING') { elements.lt.textContent = "Buscando pruebas..."; elements.co.classList.add('hidden'); elements.nb.classList.remove('hidden'); elements.nb.textContent = "Analizar Pruebas"; }
+                else if (gs.status === 'CLASSIFYING') { elements.lt.textContent = "¿Bajo qué ley clasificamos esto?"; elements.nb.classList.add('hidden'); elements.co.classList.remove('hidden'); elements.co.innerHTML = ''; l.options.forEach(o => { const b = document.createElement('button'); b.className = 'crime-btn'; b.textContent = o; b.onclick = () => { if(o === l.crime) { gs.score+=200; gs.tree.insert({caseId: l.caseId, type: l.crime, gravity: l.gravity, evidence: l.evidence, law: l.law, penalty: l.penalty}); gs.status = 'DONE'; elements.nb.classList.remove('hidden'); elements.nb.textContent = (gs.idx === 3) ? "Reporte Final" : "Siguiente Nivel"; elements.dt.textContent = "¡Correcto! Se ha insertado en el Árbol AVL."; upd(); } else { gs.score-=50; elements.dt.textContent = `Incorrecto. Pista: ${l.feedback}`; } b.blur(); }; elements.co.appendChild(b); }); }
                 elements.el.innerHTML = ''; gs.ev.forEach(e => { const i = document.createElement('li'); i.className = 'evidence-tag'; i.textContent = e; i.onclick = () => { 
                     if(l.id === 2) { elements.vimg.classList.add('hidden'); elements.dp.classList.remove('hidden'); elements.dp.innerHTML = `
-                        <div style="padding: 10px; border-bottom: 1px solid #222; display:flex; align-items:center; gap:10px;">
-                            <div style="width:30px; height:30px; background:linear-gradient(45deg, #f09, #f90); border-radius:50%;"></div>
-                            <span style="font-weight:bold; font-size:0.8rem;">Chismes_Baq_2026 ✔</span>
+                        <div style="padding: 12px; border-bottom: 1px solid #222; display:flex; align-items:center; gap:10px;">
+                            <div style="width:34px; height:34px; background:linear-gradient(45deg, #f09, #f90); border-radius:50%; display:flex; justify-content:center; align-items:center; font-weight:bold; font-size:0.8rem; color:white;">B</div>
+                            <span style="font-weight:bold; font-size:0.9rem;">Chismes_Baq_2026 ✓</span>
                         </div>
-                        <div style="width:100%; height:420px; background:url('assets/valeria_oficial.png') no-repeat center top; background-size: cover; position:relative;">
-                            <div class="falso-stamp">FALSO</div>
+                        <div style="width:100%; height:450px; background:#000; overflow:hidden; display:flex; justify-content:center; align-items:center;">
+                            <img src="assets/valeria_oficial.png" style="width:100%; height:100%; object-fit: cover;">
                         </div>
-                        <div style="padding: 10px;">
-                            <div style="margin-bottom:5px;">❤️ 💬 ✈️</div>
-                            <div style="font-size:0.9rem;"><strong>Chismes_Baq_2026</strong> ¡ESCANALDO! Valeria tiene algo con el PROFE DE MATEMÁTICAS para pasar la materia 😱🔥</div>
+                        <div style="padding: 15px;">
+                            <div style="margin-bottom:8px; font-size:1.4rem;">❤️ 💬 ✈️</div>
+                            <div style="font-size:0.95rem; line-height:1.5;">
+                                <strong>Chismes_Baq_2026</strong> 😱🔥 ¡ESCÁNDALO TOTAL! Valeria anda con el PROFE DE MATEMÁTICAS para pasar la materia. #BaqEscuela #Justicia #Calumnia
+                            </div>
                         </div>`; }
                     else { elements.dp.classList.add('hidden'); elements.vimg.classList.remove('hidden'); elements.vimg.src = `assets/${l.image}`; elements.vcap.textContent = e; }
                     elements.evw.classList.remove('hidden');
@@ -136,9 +126,37 @@
 
             elements.nb.onclick = () => { if(gs.status === 'DONE') { if(gs.idx < 3) { gs.idx++; gs.ev = []; gs.status = 'INVESTIGATING'; upd(); } else { final(); } } else { gs.status = 'CLASSIFYING'; gs.ev = LEVELS[gs.idx].evidence; upd(); } };
             elements.cv.onclick = () => elements.evw.classList.add('hidden');
-            elements.cm.onclick = () => elements.mc.classList.add('hidden');
-            elements.hb.onclick = () => { elements.mt.textContent = "Manual Legal"; elements.mb.innerHTML = "1.Injuria: Ofensas. 2.Calumnia: Delito falso. 3.Suplantación: Identidad. 4.Hostigamiento: Acoso repetido. 5.Amenaza: Mal futuro. 6.Hurto: Bien ajeno."; elements.mc.classList.remove('hidden'); };
-            function final() { elements.mt.textContent = "REPORTE"; elements.mb.innerHTML = gs.tree.getInOrder().map(n => `<p>${n.caseId}: ${n.type} - ${n.law}</p>`).join(""); elements.mc.classList.remove('hidden'); }
+            elements.cm.onclick = () => { elements.mc.classList.add('hidden'); if(gs.idx === 3 && gs.status === 'DONE') location.reload(); };
+            
+            elements.hb.onclick = () => { 
+                elements.mt.textContent = "COMPENDIO LEGAL (18 DELITOS)"; 
+                elements.mb.innerHTML = `
+                    <div style="text-align: left; max-height: 400px; overflow-y: auto; padding-right: 10px;">
+                        <ul style="list-style-type: '⚖️ '; padding-left: 15px; line-height: 1.8; font-size: 0.95rem;">
+                            <li><strong>1. Injuria:</strong> Ofensas que dañan el honor de una persona.</li>
+                            <li><strong>2. Calumnia:</strong> Acusar falsamente a alguien de un delito.</li>
+                            <li><strong>3. Suplantación:</strong> Usar datos ajenos para fingir ser otro.</li>
+                            <li><strong>4. Hostigamiento:</strong> Acoso repetitivo para causar daño.</li>
+                            <li><strong>5. Amenaza:</strong> Anunciar un mal contra alguien o su familia.</li>
+                            <li><strong>6. Acceso Abusivo:</strong> Entrar a un sistema sin permiso.</li>
+                            <li><strong>7. Difamación:</strong> Dañar la reputación pública de alguien.</li>
+                            <li><strong>8. Falso Testimonio:</strong> Mentir en declaraciones oficiales.</li>
+                            <li><strong>9. Fraude Académico:</strong> Engaño para obtener ventajas.</li>
+                            <li><strong>10. Hurto de Datos:</strong> Robar información digital privada.</li>
+                            <li><strong>11. Estafa:</strong> Engaño para obtener dinero ilegalmente.</li>
+                            <li><strong>12. Falsedad:</strong> Alterar documentos o pruebas digitales.</li>
+                            <li><strong>13. Acoso (Stalking):</strong> Persecución insistente y obsesiva.</li>
+                            <li><strong>14. Daño a la Honra:</strong> Afectar el prestigio social de alguien.</li>
+                            <li><strong>15. Acoso Colectivo:</strong> Ataque grupal coordinado (Mobbing).</li>
+                            <li><strong>16. Ciberbullying:</strong> Intimidación sistemática en redes.</li>
+                            <li><strong>17. Intimidación:</strong> Insuflar miedo constante mediante actos.</li>
+                            <li><strong>18. Extorsión:</strong> Obligar a dar dinero bajo amenaza grave.</li>
+                        </ul>
+                    </div>
+                `; 
+                elements.mc.classList.remove('hidden'); 
+            };
+            function final() { elements.mt.textContent = "REPORTE TÉCNICO VIRTUAL"; elements.mb.innerHTML = gs.tree.getInOrder().map(n => `<div style="margin-bottom:10px; border-bottom:1px solid #444; padding-bottom:5px;"><strong>ID:${n.caseId}:</strong> ${n.type}<br><small>Ley: ${n.law} | Sanción: ${n.penalty}</small></div>`).join(""); elements.mc.classList.remove('hidden'); }
             upd(); 
         });
     </script>
