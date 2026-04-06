@@ -24,16 +24,14 @@ body {
     height: 100vh;
 }
 
-/* Responsive Container */
 #game-container {
     display: flex;
     height: 100vh;
     padding: 10px;
     gap: 15px;
-    flex-wrap: wrap; /* Allow wrapping on small screens */
+    flex-wrap: wrap;
 }
 
-/* Sidebar / HUD */
 #detective-hud {
     width: 350px;
     min-width: 300px;
@@ -46,7 +44,7 @@ body {
     flex-direction: column;
     gap: 20px;
     box-shadow: var(--panel-shadow);
-    overflow-y: auto; /* Scroll if content overflows */
+    overflow-y: auto;
 }
 
 h1 {
@@ -135,7 +133,6 @@ button:hover {
     box-shadow: 0 0 15px var(--primary-neon);
 }
 
-/* Classification Buttons */
 #classification-options {
     display: flex;
     gap: 8px;
@@ -159,7 +156,6 @@ button:hover {
     display: none !important;
 }
 
-/* Main Investigation area */
 #investigation-area {
     flex: 1;
     position: relative;
@@ -202,7 +198,6 @@ button:hover {
     backdrop-filter: blur(10px);
 }
 
-/* Evidence Viewer Modal */
 #evidence-viewer {
     position: fixed;
     top: 0;
@@ -231,7 +226,7 @@ button:hover {
     max-height: 80vh;
     border-radius: 8px;
     border: 2px solid var(--primary-neon);
-    object-fit: contain; /* Ensure image fits without distortion */
+    object-fit: contain;
 }
 
 #close-viewer {
@@ -251,7 +246,62 @@ button:hover {
     font-weight: 600;
 }
 
-/* Mobile Adjustments */
+/* --- Dynamic Social Post (NIVEL 2 CORRECTION) --- */
+#dynamic-post {
+    background: #1a1d23;
+    width: 450px;
+    max-width: 90vw;
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid #333;
+    text-align: left;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    margin: 20px auto;
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+    color: #94a3b8;
+}
+
+.post-user {
+    font-weight: 700;
+    color: #e0e6ed;
+}
+
+.social-img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin: 12px 0;
+    border: 1px solid #333;
+}
+
+.falso-stamp {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-15deg);
+    border: 6px solid #ff3c3c;
+    color: #ff3c3c;
+    font-size: 3.5rem;
+    font-weight: 900;
+    padding: 5px 20px;
+    text-transform: uppercase;
+    border-radius: 8px;
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0.85;
+    background: rgba(10, 12, 16, 0.4);
+    letter-spacing: 5px;
+}
+
 @media (max-width: 768px) {
     #game-container {
         flex-direction: column;
@@ -270,11 +320,6 @@ button:hover {
         margin-top: 20px;
         width: 100%;
     }
-    #dialog-box {
-        flex-direction: column;
-        gap: 15px;
-        text-align: center;
-    }
 }
 
 @keyframes fadeIn {
@@ -282,7 +327,6 @@ button:hover {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Modal styles */
 #modal-container {
     position: fixed;
     top: 0;
