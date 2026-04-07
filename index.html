@@ -466,10 +466,10 @@
         class VisualTree { constructor(c) { this.canvas = document.getElementById(c); this.ctx = this.canvas.getContext('2d'); this.nodeRadius = 25; this.verticalSpacing = 80; this.resize(); } resize() { this.canvas.width = this.canvas.parentElement.clientWidth; this.canvas.height = this.canvas.parentElement.clientHeight; } clear() { this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); } draw(t) { this.clear(); if (t && t.root) this._drawNode(t.root, this.canvas.width / 2, 60, this.canvas.width / 4); } _drawNode(n, x, y, o) { if (!n) return; this.ctx.strokeStyle = '#00f2ff'; this.ctx.lineWidth = 2; this.ctx.setLineDash([5, 5]); if (n.left) { this.ctx.beginPath(); this.ctx.moveTo(x, y); this.ctx.lineTo(x - o, y + this.verticalSpacing); this.ctx.stroke(); this._drawNode(n.left, x - o, y + this.verticalSpacing, o / 2); } if (n.right) { this.ctx.beginPath(); this.ctx.moveTo(x, y); this.ctx.lineTo(x + o, y + this.verticalSpacing); this.ctx.stroke(); this._drawNode(n.right, x + o, y + this.verticalSpacing, o / 2); } this.ctx.setLineDash([]); this.ctx.shadowBlur = 15; this.ctx.shadowColor = '#00f2ff'; this.ctx.fillStyle = '#14181e'; this.ctx.beginPath(); this.ctx.arc(x, y, this.nodeRadius, 0, Math.PI * 2); this.ctx.fill(); this.ctx.strokeStyle = '#00f2ff'; this.ctx.lineWidth = 3; this.ctx.stroke(); this.ctx.shadowBlur = 0; this.ctx.fillStyle = '#e0e6ed'; this.ctx.font = 'bold 12px JetBrains Mono'; this.ctx.textAlign = 'center'; this.ctx.textBaseline = 'middle'; this.ctx.fillText(`ID:${n.caseId}`, x, y); const h = 180 - (n.gravity * 15); this.ctx.strokeStyle = `hsl(${h}, 100%, 50%)`; this.ctx.lineWidth = 5; this.ctx.beginPath(); this.ctx.arc(x, y, this.nodeRadius - 2, 0, Math.PI * 2); this.ctx.stroke(); } }
 
         const LEVELS = [
-            { id: 1, title: "Nivel 1 - Las primeras señales", situation: "Valeria comienza a recibir mensajes ofensivos en redes sociales. Al principio parecen bromas aisladas, pero se repiten constantemente afectando su honor.", objective: "Clasificar la agresión legalmente.", crime: "Injuria", law: "Artículo 220 CP", penalty: "Multa parcial.", gravity: 3, caseId: 300, evidence: ["Mensajes (Chat)", "ID del agresor"], image: ["ataque-falso-1.png", "ataque-falso-2.png", "ataque-falso-3.png", "ataque-falso-4.png"], options: ["Injuria", "Calumnia", "Amenaza", "Acoso", "Hostigamiento", "Daño a la honra"], feedback: "La injuria es la ofensa directa al honor." },
-            { id: 2, title: "Nivel 2 - El rumor difamatorio", situation: "Un mensaje anónimo asegura que Valeria tiene una relación secreta con un profesor para subir sus notas. Es una mentira viral.", objective: "Analizar la falsedad y clasificar el delito.", crime: "Calumnia", law: "Artículo 221 CP", penalty: "Multas por conducta deshonrosa falsa.", gravity: 5, caseId: 500, evidence: ["Post de @Chismes_Baq", "Foto de Valeria"], image: "valeria_pick1.jpeg", options: ["Calumnia", "Injuria", "Difamación", "Falso Testimonio", "Fraude Académico", "Acceso Abusivo"], feedback: "Imputar falsamente un delito es Calumnia." },
-            { id: 3, title: "Nivel 3 - La cuenta fantasma", situation: "Un perfil falso usa la foto de Valeria para insultar a otros alumnos y dañar su imagen. Debes comparar perfiles para encontrar al suplantador.", objective: "Encontrar al suplantador.", crime: "Suplantación", law: "Ley 1273 - Art. 269F", penalty: "Prisión y multas severas.", gravity: 8, caseId: 800, evidence: ["Perfil falso", "Perfil Real"], image: ["valeria_pick2.jpeg", "valeria_pick3.jpeg"], options: ["Suplantación", "Hurto de datos", "Estafa", "Acceso Abusivo", "Falsedad", "Suplantación agravada"], feedback: "Usar la identidad ajena sin permiso es Suplantación." },
-            { id: 4, title: "Nivel 4 - El ataque coordinado", situation: "Varios perfiles atacan a Valeria a la vez con mensajes masivos amenazantes.", objective: "Identificar el hostigamiento sistemático.", crime: "Hostigamiento", law: "Ley 1482 - Art. 134B", penalty: "Sanciones penales graves.", gravity: 10, caseId: 1000, evidence: ["Bandeja de DMs", "Nombres de usuarios"], image: [], options: ["Hostigamiento", "Amenazas", "Acoso Colectivo", "Ciberbullying", "Intimidación", "Extorsión"], feedback: "El acoso sistemático es Hostigamiento." }
+            { id: 1, title: "Nivel 1 - Las primeras señales", situation: "Valeria comienza a recibir mensajes ofensivos en redes sociales. Al principio parecen bromas aisladas, pero se repiten constantemente afectando su honor.", objective: "Clasificar la agresión legalmente.", crime: "Injuria", law: "Artículo 220 CP", penalty: "Multa parcial.", gravity: 3, caseId: 300, evidence: ["Mensajes (Chat)"], image: ["ataque-falso-1.png", "ataque-falso-2.png", "ataque-falso-3.png", "ataque-falso-4.png"], options: ["Injuria", "Calumnia", "Amenaza", "Acoso", "Hostigamiento", "Daño a la honra"], feedback: "La injuria es la ofensa directa al honor." },
+            { id: 2, title: "Nivel 2 - El rumor difamatorio", situation: "Un mensaje anónimo asegura que Valeria tiene una relación secreta con un profesor para subir sus notas. Es una mentira viral.", objective: "Analizar la falsedad y clasificar el delito.", crime: "Calumnia", law: "Artículo 221 CP", penalty: "Multas por conducta deshonrosa falsa.", gravity: 5, caseId: 500, evidence: ["Post de @Chismes_Baq"], image: "valeria_pick1.jpeg", options: ["Calumnia", "Injuria", "Difamación", "Falso Testimonio", "Fraude Académico", "Acceso Abusivo"], feedback: "Imputar falsamente un delito es Calumnia." },
+            { id: 3, title: "Nivel 3 - La cuenta fantasma", situation: "Un perfil falso usa la foto de Valeria para insultar a otros alumnos y dañar su imagen. Debes comparar perfiles para encontrar al suplantador.", objective: "Encontrar al suplantador.", crime: "Suplantación", law: "Ley 1273 - Art. 269F", penalty: "Prisión y multas severas.", gravity: 8, caseId: 800, evidence: ["Perfil falso"], image: ["valeria_pick2.jpeg", "valeria_pick3.jpeg"], options: ["Suplantación", "Hurto de datos", "Estafa", "Acceso Abusivo", "Falsedad", "Suplantación agravada"], feedback: "Usar la identidad ajena sin permiso es Suplantación." },
+            { id: 4, title: "Nivel 4 - El ataque coordinado", situation: "Varios perfiles atacan a Valeria a la vez con mensajes masivos amenazantes.", objective: "Identificar el hostigamiento sistemático.", crime: "Hostigamiento", law: "Ley 1482 - Art. 134B", penalty: "Sanciones penales graves.", gravity: 10, caseId: 1000, evidence: ["Bandeja de DMs"], image: ["foto hostigamiento.jpeg"], options: ["Hostigamiento", "Amenazas", "Acoso Colectivo", "Ciberbullying", "Intimidación", "Extorsión"], feedback: "El acoso sistemático es Hostigamiento." }
         ];
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -560,35 +560,6 @@
                             </div>
                             <div style="font-size:0.75rem; color:#94a3b8; margin-top:8px; text-transform:uppercase;">Hace 12 minutos</div>
                         </div>
-                    `;
-                    elements.vcap.textContent = ``;
-                } else if (level.id === 4) {
-                    elements.vimg.classList.add('hidden');
-                    elements.dp.classList.add('hidden');
-                    elements.dm.classList.remove('hidden');
-                    const dms = [
-                        { u: "Valerie", m: "Que asco eres", c: "#ff3c3c" },
-                        { u: "Isabella Mazziri", m: "puta asquerosa", c: "#7000ff" },
-                        { u: "Los dejados", m: "no te quiero ver más nunca, perra", c: "#00f2ff" },
-                        { u: "Angel Carrillo", m: "regalada", c: "#ff3c3c" },
-                        { u: "Jairo Suarez", m: "no quiero ser tu, q asco verte asi ese video", c: "#0095f6" },
-                        { u: "Luis Esteban Lafaurie Yaguna", m: "Tú: Ey lui", c: "#94a3b8" }
-                    ];
-                    elements.dm.innerHTML = `
-                        <div class="dm-header">
-                            <span style="font-weight:bold; color:white;">Direct Messages</span>
-                            <span style="color:#0095f6; font-size:0.8rem;">Filter</span>
-                        </div>
-                        ${dms.map(d => `
-                            <div class="dm-row">
-                                <div class="dm-avatar" style="color:${d.c}">${d.u[0].toUpperCase()}</div>
-                                <div class="dm-info">
-                                    <span class="dm-user">${d.u}</span>
-                                    <span class="dm-msg">${d.m}</span>
-                                </div>
-                                <div class="dm-badge ${d.m.includes('!') || d.m.includes('perra') ? 'urgent' : ''}"></div>
-                            </div>
-                        `).join('')}
                     `;
                     elements.vcap.textContent = ``;
                 } else {
