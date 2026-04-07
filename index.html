@@ -563,6 +563,39 @@
                         </div>
                     `;
                     elements.vcap.textContent = ``;
+                } else if (level.id === 4) {
+                    elements.vimg.classList.add('hidden');
+                    elements.dp.classList.add('hidden');
+                    elements.dm.classList.remove('hidden');
+                    const dms = [
+                        { u: "Valerie", m: "Que asco eres", c: "#ff3c3c", t: "1 d", i: "👩" },
+                        { u: "Isabella", m: "puta asquerosa", c: "#222", t: "1 d", i: "👧" },
+                        { u: "jp", m: "no te quiero ver más nunca, perra", c: "#222", t: "1 d", i: "👤" },
+                        { u: "Angel", m: "regalada", c: "#222", t: "2 d", i: "🕶️" },
+                        { u: "Jairo", m: "no quiero ser tu, q asco verte asi ese video", c: "#222", t: "2 d", i: "📿" },
+                        { u: "Luis", m: "Tú: Ey lui", c: "#222", t: "2 d", i: "👤", b: true }
+                    ];
+                    elements.dm.innerHTML = `
+                        <div class="dm-header">
+                            <span style="font-weight:bold; color:white; font-size:1.1rem;">Mensajes</span>
+                            <span style="color:var(--text-dim); font-size:0.9rem;">Solicitudes</span>
+                        </div>
+                        <div style="max-height: 450px; overflow-y: auto;">
+                        ${dms.map(d => `
+                            <div class="dm-row" style="background: transparent; margin-bottom: 2px;">
+                                <div class="dm-avatar" style="background:${d.u==='Valerie'?'#444':'#222'}; border-color:#333; font-size:1.4rem;">${d.i}</div>
+                                <div class="dm-info">
+                                    <span class="dm-user" style="font-size:0.95rem;">${d.u}</span>
+                                    <span class="dm-msg" style="color:var(--text-main); font-weight:${d.b?'400':'700'};">
+                                        ${d.m} <span style="color:var(--text-dim); font-weight:400; font-size:0.75rem; margin-left:4px;">${d.t}</span>
+                                    </span>
+                                </div>
+                                ${!d.b ? `<div class="dm-badge urgent" style="width:8px; height:8px; right:10px;"></div>` : `<div class="dm-badge" style="background:#0095f6; right:10px;"></div>`}
+                            </div>
+                        `).join('')}
+                        </div>
+                    `;
+                    elements.vcap.textContent = ``;
                 } else {
                     elements.dp.classList.add('hidden');
                     elements.dm.classList.add('hidden');
