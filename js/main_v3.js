@@ -1,6 +1,5 @@
 /**
- * main.js - v1.4 Final (Drone Removal & Cache Busting)
- * CyberDetective - Case: Valeria
+ * main.js | CyberDetective - Case: Valeria
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -32,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         levelIndicator.textContent = `NIVEL ${currentLevel.id}: ${currentLevel.title}`;
         scoreDisplay.textContent = `Karma: ${gameState.score}`;
         scenarioText.textContent = currentLevel.situation;
-        
+
         if (gameState.currentStatus === 'INVESTIGATING') {
             lawText.textContent = "Analizando evidencias digitales de Valeria.";
             classificationOptions.classList.add('hidden');
@@ -75,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (selectedCrime === currentLevel.crime) {
             gameState.score += 200;
             dialogText.textContent = `¡Correcto! Es ${currentLevel.crime}. El Árbol AVL se actualiza.`;
-            
+
             gameState.tree.insert({
                 caseId: currentLevel.caseId,
                 type: currentLevel.crime,
@@ -168,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
     nextActionBtn.addEventListener('click', triggerNextAction);
     closeModal.addEventListener('click', () => modalContainer.classList.add('hidden'));
     closeViewer.addEventListener('click', () => evidenceViewer.classList.add('hidden'));
-    
+
     helpBtn.addEventListener('click', () => {
         modalTitle.textContent = "CÓDIGO DIGITAL: MANUAL DEL DETECTIVE";
         modalBodyContent.innerHTML = `
