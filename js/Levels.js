@@ -12,7 +12,7 @@ const LEVELS = [
         evidence: ["Captura de pantalla", "ID de usuario @Anonimo123"],
         image: "chat_bullying_screenshot.png",
         options: ["Injuria", "Calumnia", "Amenaza", "Acoso", "Hostigamiento", "Daño a la honra"],
-        feedback: "La injuria se refiere a las ofensas que deshonran a alguien directamente (Art. 220)."
+        feedback: "Se refiere a las ofensas que deshonran a alguien directamente afectando su buen nombre (Art. 220)."
     },
     {
         id: 2,
@@ -27,7 +27,7 @@ const LEVELS = [
         evidence: ["Post de chisme viral", "Foto de Valeria (perfil)"],
         image: "valeria_oficial.png",
         options: ["Calumnia", "Injuria", "Difamación", "Falso Testimonio", "Fraude Académico", "Injuria por vía de hecho"],
-        feedback: "Imputar falsamente una conducta deshonrosa (como una relación prohibida) es Calumnia (Art. 221)."
+        feedback: "Imputar falsamente una conducta delictiva o deshonrosa a alguien (Art. 221)."
     },
     {
         id: 3,
@@ -42,7 +42,7 @@ const LEVELS = [
         evidence: ["Perfil falso", "Dirección IP", "Foto suplantada"],
         image: "valeria_oficial.png",
         options: ["Suplantación de identidad", "Hurto de datos", "Estafa", "Acceso Abusivo", "Falsedad en documento", "Suplantación agravada"],
-        feedback: "Utilizar la identidad de otro sin su consentimiento es un delito informático (Ley 1273)."
+        feedback: "Utilizar la identidad de otro sin su consentimiento para cometer actos ilícitos (Ley 1273)."
     },
     {
         id: 4,
@@ -57,7 +57,7 @@ const LEVELS = [
         evidence: ["Log de ataques simultáneos", "Patrón de red", "ID del cabecilla"],
         image: "valeria_oficial.png",
         options: ["Hostigamiento digital", "Amenazas", "Acoso Colectivo", "Ciberbullying", "Intimidación", "Extorsión"],
-        feedback: "El hostigamiento digital coordinado busca intimidar y degradar repetidamente."
+        feedback: "Conducta sistemática y coordinada que busca intimidar, asediar y degradar repetidamente."
     }
 ];
 
