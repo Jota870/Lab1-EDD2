@@ -60,7 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
         classificationOptions.innerHTML = '';
         classificationOptions.classList.remove('hidden');
 
-        currentLevel.options.forEach(option => {
+        const shuffledOptions = [...currentLevel.options].sort(() => Math.random() - 0.5);
+        shuffledOptions.forEach(option => {
             const btn = document.createElement('button');
             btn.className = 'crime-btn';
             btn.textContent = option;

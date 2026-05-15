@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>CyberDetective - Exposición EDD2</title>
+  <!-- Reveal.js CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reset.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/night.min.css">
+  <!-- Code Highlighting Theme -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/highlight/monokai.min.css">
+  <style>
+      .reveal h2 { color: #00f2ff; text-transform: none; }
+      .reveal p, .reveal li { font-size: 1.2rem; }
+      .reveal pre { width: 100%; box-shadow: 0 0 15px rgba(0, 242, 255, 0.2); }
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+      
+      <!-- Slide 1: Portada -->
+      <section>
+        <h2 style="font-size: 2.5rem; text-shadow: 0px 0px 10px #00f2ff;">CyberDetective: Análisis del Código y Grafos</h2>
+        <p style="font-size: 1.5rem;">Aplicación Práctica de Estructuras de Datos II</p>
+      </section>
+
+      <!-- Slide 2: El Árbol como Grafo -->
+      <section>
+        <h2>El Árbol como un Grafo Especial</h2>
+        <p>En teoría de grafos, un árbol es un grafo dirigido conexo sin ciclos.</p>
+        <p>En nuestro laboratorio, utilizamos un <strong>Árbol AVL</strong> (árbol binario auto-balanceable) debido a la relación de jerarquía que existe entre la gravedad de las penas de los delitos.</p>
+        <pre><code class="javascript" data-trim data-noescape>
+class AVLTree {
+    constructor() {
+        this.root = null; // El vértice origen
+    }
+}
+        </code></pre>
+      </section>
+
+      <!-- Slide 3: Vértices -->
+      <section>
+        <h2>Los Vértices (Nodos)</h2>
+        <p>En nuestro código, están representados por la clase <code>CaseNode</code>.</p>
+        <pre><code class="javascript" data-trim data-noescape>
+class CaseNode {
+    constructor(data) {
+        this.caseId = data.caseId;       
+        this.type = data.type;           
+        this.evidence = data.evidence;   
+        
+        this.gravity = data.gravity;     // ¡Atributo de Peso!
+        this.left = null;                // Arista 1
+        this.right = null;               // Arista 2
+    }
+}
+        </code></pre>
+      </section>
+
+      <!-- Slide 4: Aristas -->
+      <section>
+        <h2>Las Aristas y los Pesos</h2>
+        <p>Los atributos <code>this.left</code> y <code>this.right</code> actúan como las aristas direccionadas del grafo. El factor para conectarlas es el peso métrico: <code>gravity</code>.</p>
+        <pre><code class="javascript" data-trim data-noescape>
+if (data.gravity < node.gravity) {
+    // La arista apunta a la sub-rama izquierda
+    node.left = this._insertNode(node.left, data);
+
+} else if (data.gravity > node.gravity) {
+    // La arista apunta a la sub-rama derecha
+    node.right = this._insertNode(node.right, data);
+}
+        </code></pre>
+      </section>
+
+      <!-- Slide 5: Rotaciones -->
+      <section>
+        <h2>Dinámica: Rotaciones del Grafo</h2>
+        <p>El grafo cambia automáticamente sus aristas en base al 'Factor de Balance' para retener una eficiencia de búsqueda O(log n).</p>
+        <pre><code class="javascript" data-trim data-noescape>
+// Algoritmo para balancear subgrafos
+rotateRight(y) {
+    let x = y.left;       // x será la nueva raíz del subgrafo
+    let T2 = x.right;     // Rama huérfana
+    
+    // Inversión de aristas
+    x.right = y;          
+    y.left = T2;          
+    return x;
+}
+        </code></pre>
+      </section>
+
+      <!-- Slide 6: Traversal -->
+      <section>
+        <h2>Recorrido del Grafo</h2>
+        <p>El Reporte Final implementa un algoritmo de travesía: <strong>In-Order Traversal</strong>.</p>
+        <p>Esto permite extraer los vértices de menor gravedad a mayor gravedad iterando sobre el grafo profundo.</p>
+        <pre><code class="javascript" data-trim data-noescape>
+_inOrder(node, result) {
+    if (node) {
+        this._inOrder(node.left, result);  // 1. Visitar subgrafo izq
+        result.push(node);                 // 2. Extraer vértice raíz
+        this._inOrder(node.right, result); // 3. Visitar subgrafo der
+    }
+}
+        </code></pre>
+      </section>
+
+      <!-- Slide 7: Conclusión -->
+      <section>
+        <h2 style="color:#00f2ff;">Conclusiones</h2>
+        <ul>
+            <li style="margin-bottom:15px"><strong>CaseNode:</strong> Nuestro vértice de estado con los datos del crimen.</li>
+            <li style="margin-bottom:15px"><strong>Gravedad (Gravity):</strong> El peso algorítmico que define la geometría del grafo.</li>
+            <li style="margin-bottom:15px"><strong>Punteros Left/Right:</strong> Las aristas dinámicas manejadas de forma recursiva.</li>
+        </ul>
+        <br/><br/>
+        <p style="color:#00f2ff; font-weight:bold;">¡Teoría y Práctica Funcional Unificadas! 🕵️‍♂️💻</p>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Reveal.js Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/highlight/highlight.min.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      transition: 'convex',
+      plugins: [ RevealHighlight ]
+    });
+  </script>
+</body>
+</html>
