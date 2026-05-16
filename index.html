@@ -432,7 +432,8 @@
                 <div id="classification-options" class="hidden"></div>
                 <button id="next-action-btn" style="width: 100%; margin-top: 15px;">Empezar Investigación</button>
             </section>
-            <button id="help-btn" style="margin-top: auto;">Manual Legal</button>
+            <button id="advanced-btn" style="margin-top: auto; border-color: var(--secondary-neon); color: var(--secondary-neon);">Análisis de Red (Grafos)</button>
+            <button id="help-btn" style="margin-top: 10px;">Manual Legal</button>
         </aside>
         <main id="investigation-area">
             <div id="canvas-container"><canvas id="tree-canvas"></canvas></div>
@@ -452,6 +453,51 @@
                 style="width: 100%;">Cerrar</button>
         </div>
     </div>
+    
+    <div id="graph-modal-container" class="hidden">
+        <div class="modal graph-modal" style="width: 650px; max-width: 95%;">
+            <h2 style="color: var(--secondary-neon); margin-bottom: 15px;">Análisis Avanzado de Red</h2>
+            <div class="graph-tabs">
+                <button class="tab-btn active" data-tab="tab-recorridos">Recorridos</button>
+                <button class="tab-btn" data-tab="tab-dijkstra">Dijkstra</button>
+                <button class="tab-btn" data-tab="tab-prim">PRIM (MST)</button>
+                <button class="tab-btn" data-tab="tab-flujo">Ford-Fulkerson</button>
+            </div>
+            
+            <div class="tab-content" id="tab-recorridos">
+                <h3>Recorridos del Grafo</h3>
+                <p style="font-size: 0.85rem; color: #888; margin-bottom: 10px;">Visualiza cómo se propaga la investigación en anchura (BFS) o profundidad (DFS).</p>
+                <div style="display: flex; gap: 10px;">
+                    <button id="run-bfs-btn">Ejecutar BFS</button>
+                    <button id="run-dfs-btn">Ejecutar DFS</button>
+                </div>
+                <div id="recorridos-result" class="result-box">Esperando ejecución...</div>
+            </div>
+            
+            <div class="tab-content hidden" id="tab-dijkstra">
+                <h3>Caminos Mínimos (Dijkstra)</h3>
+                <p style="font-size: 0.85rem; color: #888; margin-bottom: 10px;">Encuentra la ruta de menor peso desde la raíz hasta el nodo más profundo.</p>
+                <button id="run-dijkstra-btn">Calcular Ruta Mínima</button>
+                <div id="dijkstra-result" class="result-box">Esperando ejecución...</div>
+            </div>
+            
+            <div class="tab-content hidden" id="tab-prim">
+                <h3>Árbol de Expansión Mínima (PRIM)</h3>
+                <p style="font-size: 0.85rem; color: #888; margin-bottom: 10px;">Conecta todos los casos minimizando el costo total de las conexiones.</p>
+                <button id="run-prim-btn">Calcular MST</button>
+                <div id="prim-result" class="result-box">Esperando ejecución...</div>
+            </div>
+            
+            <div class="tab-content hidden" id="tab-flujo">
+                <h3>Flujo Máximo (Ford-Fulkerson)</h3>
+                <p style="font-size: 0.85rem; color: #888; margin-bottom: 10px;">Calcula el flujo máximo de ataques desde el caso inicial hasta el último caso detectado.</p>
+                <button id="run-flujo-btn">Calcular Flujo Máximo</button>
+                <div id="flujo-result" class="result-box">Esperando ejecución...</div>
+            </div>
+            
+            <button id="close-graph-modal" style="margin-top: 20px; width: 100%; border-color: var(--secondary-neon); color: var(--secondary-neon);">Cerrar Panel</button>
+        </div>
+    </div>
     <div id="evidence-viewer" class="hidden">
         <div class="viewer-content">
             <span id="close-viewer">&times;</span>
@@ -462,6 +508,7 @@
         </div>
     </div>
 
+    <script src="js/GraphAlgorithms.js"></script>
     <script>
         class CaseNode { constructor(d) { this.caseId = d.caseId; this.type = d.type; this.evidence = d.evidence; this.law = d.law; this.penalty = d.penalty; this.gravity = d.gravity; this.height = 1; this.left = null; this.right = null; } }
         class AVLTree { constructor() { this.root = null; } getHeight(n) { return n ? n.height : 0; } getBalanceFactor(n) { return n ? this.getHeight(n.left) - this.getHeight(n.right) : 0; } updateHeight(n) { n.height = Math.max(this.getHeight(n.left), this.getHeight(n.right)) + 1; } rotateRight(y) { let x = y.left; let T2 = x.right; x.right = y; y.left = T2; this.updateHeight(y); this.updateHeight(x); return x; } rotateLeft(x) { let y = x.right; let T2 = y.left; y.left = x; x.right = T2; this.updateHeight(x); this.updateHeight(y); return y; } insert(d) { this.root = this._insertNode(this.root, d); return this.root; } _insertNode(n, d) { if (!n) return new CaseNode(d); if (d.gravity < n.gravity) n.left = this._insertNode(n.left, d); else if (d.gravity > n.gravity) n.right = this._insertNode(n.right, d); else return n; this.updateHeight(n); let b = this.getBalanceFactor(n); if (b > 1 && d.gravity < n.left.gravity) return this.rotateRight(n); if (b < -1 && d.gravity > n.right.gravity) return this.rotateLeft(n); if (b > 1 && d.gravity > n.left.gravity) { n.left = this.rotateLeft(n.left); return this.rotateRight(n); } if (b < -1 && d.gravity < n.right.gravity) { n.right = this.rotateRight(n.right); return this.rotateLeft(n); } return n; } getInOrder() { const r = []; this._inOrder(this.root, r); return r; } _inOrder(n, r) { if (n) { this._inOrder(n.left, r); r.push(n); this._inOrder(n.right, r); } } }
@@ -504,8 +551,11 @@
                 nb: document.getElementById('next-action-btn'), co: document.getElementById('classification-options'), hb: document.getElementById('help-btn'),
                 mc: document.getElementById('modal-container'), mt: document.getElementById('modal-title'), mb: document.getElementById('modal-body-content'), cm: document.getElementById('close-modal'),
                 evw: document.getElementById('evidence-viewer'), vimg: document.getElementById('viewer-img'), vcap: document.getElementById('viewer-caption'), cv: document.getElementById('close-viewer'), dp: document.getElementById('dynamic-post'),
-                dm: document.getElementById('instagram-dm')
+                dm: document.getElementById('instagram-dm'),
+                advBtn: document.getElementById('advanced-btn'), graphModal: document.getElementById('graph-modal-container'), closeGraphModal: document.getElementById('close-graph-modal'),
+                tabBtns: document.querySelectorAll('.tab-btn'), tabContents: document.querySelectorAll('.tab-content')
             };
+            const graphSystem = new CaseGraph();
 
             function upd() {
                 const l = LEVELS[gs.idx];
@@ -666,6 +716,68 @@
                     </div>
                 `;
                 elements.mc.classList.remove('hidden');
+            });
+            
+            // Graph Tabs Logic
+            elements.tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    elements.tabBtns.forEach(b => b.classList.remove('active'));
+                    elements.tabContents.forEach(c => c.classList.add('hidden'));
+                    btn.classList.add('active');
+                    document.getElementById(btn.dataset.tab).classList.remove('hidden');
+                });
+            });
+
+            // Graph Algorithms Execution
+            elements.advBtn.addEventListener('click', () => {
+                playSound('menuOpen');
+                graphSystem.buildFromTree(gs.tree.root);
+                elements.graphModal.classList.remove('hidden');
+            });
+            elements.closeGraphModal.addEventListener('click', () => {
+                playSound('menuClose');
+                elements.graphModal.classList.add('hidden');
+            });
+
+            document.getElementById('run-bfs-btn').addEventListener('click', () => {
+                if (!graphSystem.rootId) return document.getElementById('recorridos-result').innerHTML = "Grafo vacío. Resuelve casos primero.";
+                const res = graphSystem.bfs(graphSystem.rootId);
+                document.getElementById('recorridos-result').innerHTML = "<strong>Orden BFS:</strong> " + res.map(id => `[Caso ${id}]`).join(" ➔ ");
+            });
+
+            document.getElementById('run-dfs-btn').addEventListener('click', () => {
+                if (!graphSystem.rootId) return document.getElementById('recorridos-result').innerHTML = "Grafo vacío. Resuelve casos primero.";
+                const res = graphSystem.dfs(graphSystem.rootId);
+                document.getElementById('recorridos-result').innerHTML = "<strong>Orden DFS:</strong> " + res.map(id => `[Caso ${id}]`).join(" ➔ ");
+            });
+
+            document.getElementById('run-dijkstra-btn').addEventListener('click', () => {
+                if (!graphSystem.rootId || !graphSystem.furthestLeafId) return document.getElementById('dijkstra-result').innerHTML = "Grafo vacío.";
+                const res = graphSystem.dijkstra(graphSystem.rootId, graphSystem.furthestLeafId);
+                if (!res || res.path.length === 0) {
+                    document.getElementById('dijkstra-result').innerHTML = "Ruta no encontrada.";
+                } else {
+                    document.getElementById('dijkstra-result').innerHTML = `<strong>Ruta Óptima:</strong> ${res.path.map(id => `[Caso ${id}]`).join(" ➔ ")}<br><br><strong>Costo Total (Peso):</strong> ${res.cost}`;
+                }
+            });
+
+            document.getElementById('run-prim-btn').addEventListener('click', () => {
+                if (!graphSystem.rootId) return document.getElementById('prim-result').innerHTML = "Grafo vacío.";
+                const res = graphSystem.prim();
+                let html = "<strong>Conexiones del MST:</strong><br>";
+                let totalCosto = 0;
+                res.forEach(edge => {
+                    html += `Arista (Caso ${edge.from} ↔ Caso ${edge.to}) : Costo ${edge.weight}<br>`;
+                    totalCosto += edge.weight;
+                });
+                html += `<br><strong>Costo Total MST:</strong> ${totalCosto}`;
+                document.getElementById('prim-result').innerHTML = html;
+            });
+
+            document.getElementById('run-flujo-btn').addEventListener('click', () => {
+                if (!graphSystem.rootId || !graphSystem.furthestLeafId) return document.getElementById('flujo-result').innerHTML = "Grafo vacío.";
+                const flujo = graphSystem.fordFulkerson(graphSystem.rootId, graphSystem.furthestLeafId);
+                document.getElementById('flujo-result').innerHTML = `<strong>Flujo Máximo:</strong> ${flujo} unidades desde Caso ${graphSystem.rootId} hasta Caso ${graphSystem.furthestLeafId}.`;
             });
         });
     </script>

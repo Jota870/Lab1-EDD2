@@ -347,3 +347,54 @@ button:hover {
     border-radius: 16px;
     max-width: 90%;
 }
+
+/* --- Graph Tabs Styles --- */
+.graph-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+    overflow-x: auto;
+}
+
+.tab-btn {
+    flex: 1;
+    background: transparent;
+    border: 1px solid #444;
+    color: var(--text-dim);
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+.tab-btn.active {
+    border-color: var(--primary-neon);
+    color: var(--primary-neon);
+    background: rgba(0, 242, 255, 0.1);
+    box-shadow: 0 0 10px rgba(0, 242, 255, 0.2);
+}
+
+.tab-btn:hover:not(.active) {
+    border-color: var(--secondary-neon);
+    color: var(--text-main);
+}
+
+.result-box {
+    background: #0d1015;
+    border: 1px solid #333;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+    min-height: 80px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--text-main);
+    line-height: 1.5;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
