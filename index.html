@@ -1,786 +1,132 @@
+<!-- index.html -->
+<!-- cleaned up from the previous one used that was a huge block of buttons and classes.  - EJ -->
+
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CASEFILE: REDACTED - El Árbol de la Verdad</title>
+    <title>CASEFILE: REDACTED</title>
     <link
         href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@400;600;800&display=swap"
         rel="stylesheet">
-    <style>
-        :root {
-            --bg-dark: #0a0c10;
-            --card-bg: rgba(20, 24, 30, 0.85);
-            --primary-neon: #00f2ff;
-            --secondary-neon: #7000ff;
-            --accent-red: #ff3c3c;
-            --text-main: #e0e6ed;
-            --text-dim: #94a3b8;
-            --border-color: rgba(0, 242, 255, 0.3);
-            --panel-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            font-family: 'Outfit', sans-serif;
-            overflow: hidden;
-            height: 100vh;
-        }
-
-        #game-container {
-            display: flex;
-            height: 100vh;
-            padding: 10px;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        #detective-hud {
-            width: 350px;
-            min-width: 300px;
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            box-shadow: var(--panel-shadow);
-            overflow-y: auto;
-        }
-
-        h1 {
-            font-size: 1.5rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        h1 span {
-            color: var(--primary-neon);
-            text-shadow: 0 0 10px var(--primary-neon);
-        }
-
-        #level-indicator {
-            color: var(--secondary-neon);
-            font-weight: 600;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            margin-top: 5px;
-        }
-
-        #score-display {
-            font-family: 'JetBrains Mono', monospace;
-            color: #ff9d00;
-            margin-top: 5px;
-            font-size: 0.8rem;
-        }
-
-        section h3 {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            color: var(--text-dim);
-            margin-bottom: 8px;
-            letter-spacing: 1px;
-        }
-
-        .content {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 3px solid var(--primary-neon);
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-
-        ul#evidence-list {
-            list-style: none;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .evidence-tag {
-            background: var(--secondary-neon);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-            animation: fadeIn 0.4s ease;
-        }
-
-        .evidence-tag:hover {
-            box-shadow: 0 0 15px var(--secondary-neon);
-            transform: translateY(-3px);
-        }
-
-        button {
-            background: transparent;
-            border: 1px solid var(--primary-neon);
-            color: var(--primary-neon);
-            padding: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: 0.3s;
-            font-size: 0.9rem;
-        }
-
-        button:hover {
-            background: var(--primary-neon);
-            color: var(--bg-dark);
-            box-shadow: 0 0 15px var(--primary-neon);
-        }
-
-        #classification-options {
-            display: flex;
-            gap: 8px;
-            margin-top: 15px;
-            flex-wrap: wrap;
-        }
-
-        .crime-btn {
-            border: 1px solid var(--secondary-neon);
-            color: var(--secondary-neon);
-            padding: 8px 12px;
-        }
-
-        .crime-btn:hover {
-            background: var(--secondary-neon);
-            color: white;
-            box-shadow: 0 0 15px var(--secondary-neon);
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        #investigation-area {
-            flex: 1;
-            position: relative;
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://w0.peakpx.com/wallpaper/424/515/HD-wallpaper-dark-techno-city-cyberpunk-aesthetic-buildings.jpg') no-repeat center center;
-            background-size: cover;
-            border-radius: 16px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        #canvas-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        #tree-canvas {
-            width: 100%;
-            height: 100%;
-        }
-
-        #interaction-overlay {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 85%;
-        }
-
-        #dialog-box {
-            background: var(--card-bg);
-            border: 2px solid var(--primary-neon);
-            border-radius: 12px;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            backdrop-filter: blur(10px);
-        }
-
-        #evidence-viewer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-
-        .viewer-content {
-            position: relative;
-            max-width: 95%;
-            max-height: 95%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #viewer-img {
-            max-width: 100%;
-            max-height: 80vh;
-            border-radius: 8px;
-            border: 2px solid var(--primary-neon);
-            object-fit: contain;
-        }
-
-        #close-viewer {
-            position: absolute;
-            top: -45px;
-            right: 0;
-            font-size: 2.5rem;
-            color: white;
-            cursor: pointer;
-        }
-
-        #dynamic-post {
-            background: #1a1d23; width: 95vw; max-width: 450px; border-radius: 12px;
-            border: 1px solid #333; text-align: left; position: relative;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.8); margin: 20px auto; animation: fadeIn 0.5s ease;
-            overflow: hidden;
-        }
-
-        .post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; font-size: 0.9rem; color: #94a3b8; }
-        .post-user { font-weight: 700; color: #e0e6ed; }
-        .social-img { width: 100%; height: 300px; object-fit: cover; border-radius: 12px; margin: 12px 0; border: 1px solid #333; }
-
-        .falso-stamp {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-15deg);
-            border: 6px solid #ff3c3c; color: #ff3c3c; font-size: min(5rem, 15vw); font-weight: 900;
-            padding: 5px 20px; text-transform: uppercase; border-radius: 8px; z-index: 10;
-            opacity: 0.85; background: rgba(10, 12, 16, 0.4); pointer-events: none;
-        }
-
-        #instagram-dm {
-            background: #000; width: 95vw; max-width: 450px; border-radius: 12px;
-            border: 1px solid #333; text-align: left;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.8); margin: 10px auto; animation: fadeIn 0.5s ease;
-            overflow: hidden;
-        }
-
-        .dm-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 15px; border-bottom: 1px solid #222; margin-bottom: 15px; }
-        .dm-row { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; position: relative; }
-        .dm-avatar { width: 45px; height: 45px; border-radius: 50%; background: #333; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid #555; flex-shrink: 0; }
-        .dm-info { flex: 1; min-width: 0; }
-        .dm-user { font-size: 0.85rem; font-weight: 700; color: #fff; display: block; }
-        .dm-msg { font-size: 0.8rem; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .dm-badge { width: 10px; height: 10px; background: #0095f6; border-radius: 50%; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); }
-        .dm-badge.urgent { background: #ff3c3c; box-shadow: 0 0 10px #ff3c3c; }
-
-        #modal-container, #graph-modal-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal {
-            background: var(--bg-dark);
-            border: 1px solid var(--secondary-neon);
-            padding: 30px;
-            border-radius: 16px;
-            max-width: 90%;
-            max-height: 85vh;
-            overflow-y: auto;
-        }
-
-        #main-menu {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(rgba(10, 12, 16, 0.8), rgba(10, 12, 16, 0.95)), url('https://w0.peakpx.com/wallpaper/424/515/HD-wallpaper-dark-techno-city-cyberpunk-aesthetic-buildings.jpg') no-repeat center center;
-            background-size: cover;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 3000;
-            text-align: center;
-        }
-
-        #main-menu h1 {
-            font-size: 4.5rem;
-            margin-bottom: 20px;
-            text-shadow: 0 0 20px var(--primary-neon);
-            animation: fadeIn 1s ease;
-            line-height: 1.1;
-        }
-
-        #main-menu p {
-            font-size: 1.3rem;
-            color: var(--text-dim);
-            margin-bottom: 40px;
-            max-width: 650px;
-            line-height: 1.6;
-            animation: fadeIn 1.5s ease;
-            padding: 0 20px;
-        }
-
-        .start-btn {
-            font-size: 1.5rem;
-            padding: 15px 40px;
-            border: 2px solid var(--primary-neon);
-            background: rgba(0, 242, 255, 0.1);
-            color: var(--primary-neon);
-            border-radius: 12px;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
-            font-weight: bold;
-            font-family: 'Outfit', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            animation: fadeIn 2s ease;
-        }
-
-        .start-btn:hover {
-            background: var(--primary-neon);
-            color: var(--bg-dark);
-            box-shadow: 0 0 30px var(--primary-neon);
-            transform: scale(1.05);
-        }
-
-        .main-menu-help-btn {
-            background: rgba(0, 242, 255, 0.1);
-            color: var(--primary-neon);
-            border: 2px solid var(--primary-neon);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            font-size: 1.4rem;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 800;
-        }
-
-        .main-menu-help-btn:hover {
-            background: var(--primary-neon);
-            color: var(--bg-dark);
-            box-shadow: 0 0 25px var(--primary-neon);
-            transform: scale(1.1);
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+
+    <!-- MAIN MENU -->
     <div id="main-menu">
         <h1>CASEFILE:<br><span>REDACTED</span></h1>
         <p>En un mundo donde la información es el arma más peligrosa, tu deber es descubrir la verdad, clasificar las
-            pruebas y hacer justicia utilizando la estructura perfecta.</p>
-        <button class="start-btn" id="start-game-btn">Iniciar Investigación</button>
-
+            pruebas y hacer justicia.</p>
+        <div style="display:flex; gap:15px; flex-wrap:wrap; justify-content:center; margin-top:10px;">
+            <button class="start-btn" id="start-btn">Iniciar Investigación</button>
+            <button class="start-btn" id="help-btn" style="font-size:1rem; padding:12px 28px;">Manual Legal</button>
+        </div>
     </div>
 
+    <!-- GAME CONTAINER -->
     <div id="game-container" class="hidden">
-        <aside id="detective-hud">
+        <aside id="detective-hud"> <!-- LEFT HUD -->
             <header>
                 <h1>CASEFILE: <span>REDACTED</span></h1>
                 <div id="level-indicator">INICIANDO...</div>
                 <div id="score-display">Karma: 0</div>
             </header>
-            <section id="case-file">
+
+            <section id="case-file"> <!-- Node Info -->
                 <h3>EXPEDIENTE</h3>
-                <div id="scenario-text" class="content">...</div>
+                <div id="scenario-text" class="content">Haz clic en un nodo para analizarlo.</div>
             </section>
-            <section id="evidence-collector">
+
+            <section id="evidence-collector"> <!-- Evidence -->
                 <h3>PRUEBAS</h3>
                 <ul id="evidence-list"></ul>
             </section>
-            <section id="legal-actions">
-                <div id="law-text" class="content">Analizando...</div>
+
+            <section id="legal-actions"> <!-- Legal + Classification -->
+                <h3>ACCIONES LEGALES</h3>
+                <div id="law-text" class="content">Esperando análisis...</div>
                 <div id="classification-options" class="hidden"></div>
-                <button id="next-action-btn" style="width: 100%; margin-top: 15px;">Empezar Investigación</button>
+                <button id="next-action-btn" class="hidden" style="width:100%; margin-top:15px;">Analizar
+                    Pruebas</button>
             </section>
-            <button id="advanced-btn" style="margin-top: auto; border-color: var(--secondary-neon); color: var(--secondary-neon);">Análisis de Red (Grafos)</button>
-            <button id="help-btn" style="margin-top: 10px;">Manual Legal</button>
-        </aside>
-        <main id="investigation-area">
-            <div id="canvas-container"><canvas id="tree-canvas"></canvas></div>
-            <div id="interaction-overlay">
-                <div id="dialog-box">
-                    <div id="dialog-text">Bienvenido al sistema.</div>
-                    <button class="main-menu-help-btn" id="main-menu-rules-btn" title="Manual Avanzado">?</button>
+
+            <div id="hud-controls"> <!-- Bottom HUD -->
+                <button id="run-algo-btn" class="hidden"
+                    style="width:100%; border-color:var(--secondary-neon); color:var(--secondary-neon);">Ejecutar
+                    Algoritmo</button>
+                <div id="quick-nav">
+                    <button id="mission-tracker-btn" title="Progreso de Misiones">☰</button>
+                    <button id="legal-btn" title="Manual Legal">⚖</button>
+                    <button id="report-btn" title="Reporte Final">📋</button>
                 </div>
             </div>
+        </aside>
+
+        <!-- MAIN CANVAS AREA -->
+        <main id="investigation-area">
+
+            <div id="mission-bar" class="hidden"> <!-- Mission bar -->
+                <span id="mission-title">Misión</span>
+                <span id="mission-instructions"></span>
+            </div>
+
+            <div id="canvas-container"> <!-- Graph canvas -->
+                <canvas id="graph-canvas"></canvas>
+            </div>
+
+            <div id="algo-result-box" class="hidden"></div> <!-- Algorithm results -->
+
+            <div id="interaction-overlay"> <!-- Dialog box -->
+                <div id="dialog-box">
+                    <div id="dialog-text">Bienvenido al sistema.</div>
+                    <button class="icon-btn" id="main-menu-rules-btn" title="Instrucciones">?</button>
+                </div>
+            </div>
+
+            <div id="mission-tracker-sidebar"> <!-- Mission tracker sidebar -->
+                <div id="mission-tracker-header">
+                    <span>PROGRESO</span>
+                    <button class="icon-btn" id="close-tracker-btn">✕</button>
+                </div>
+                <ul id="mission-checklist"></ul>
+                <div id="tracker-hint"></div>
+            </div>
+
         </main>
     </div>
 
+    <!-- GENERIC MODAL -->
     <div id="modal-container" class="hidden">
         <div class="modal">
             <h2 id="modal-title"></h2>
-            <div id="modal-body-content" style="margin:20px 0;"></div><button id="close-modal"
-                style="width: 100%;">Cerrar</button>
+            <div id="modal-body-content" style="margin:20px 0;"></div>
+            <button id="close-modal" style="width:100%;">Continuar</button>
         </div>
     </div>
-    
-    <div id="graph-modal-container" class="hidden">
-        <div class="modal graph-modal" style="width: 650px; max-width: 95%;">
-            <h2 style="color: var(--secondary-neon); margin-bottom: 15px;">Análisis Avanzado de Red</h2>
-            <div class="graph-tabs">
-                <button class="tab-btn active" data-tab="tab-recorridos">Recorridos</button>
-                <button class="tab-btn" data-tab="tab-dijkstra">Dijkstra</button>
-                <button class="tab-btn" data-tab="tab-prim">PRIM (MST)</button>
-                <button class="tab-btn" data-tab="tab-flujo">Ford-Fulkerson</button>
-            </div>
-            
-            <div class="tab-content" id="tab-recorridos">
-                <h3>Recorridos del Grafo</h3>
-                <p style="font-size: 0.85rem; color: #888; margin-bottom: 10px;">Visualiza cómo se propaga la investigación en anchura (BFS) o profundidad (DFS).</p>
-                <div style="display: flex; gap: 10px;">
-                    <button id="run-bfs-btn">Ejecutar BFS</button>
-                    <button id="run-dfs-btn">Ejecutar DFS</button>
-                </div>
-                <div id="recorridos-result" class="result-box">Esperando ejecución...</div>
-            </div>
-            
-            <div class="tab-content hidden" id="tab-dijkstra">
-                <h3>Caminos Mínimos (Dijkstra)</h3>
-                <p style="font-size: 0.85rem; color: #888; margin-bottom: 10px;">Encuentra la ruta de menor peso desde la raíz hasta el nodo más profundo.</p>
-                <button id="run-dijkstra-btn">Calcular Ruta Mínima</button>
-                <div id="dijkstra-result" class="result-box">Esperando ejecución...</div>
-            </div>
-            
-            <div class="tab-content hidden" id="tab-prim">
-                <h3>Árbol de Expansión Mínima (PRIM)</h3>
-                <p style="font-size: 0.85rem; color: #888; margin-bottom: 10px;">Conecta todos los casos minimizando el costo total de las conexiones.</p>
-                <button id="run-prim-btn">Calcular MST</button>
-                <div id="prim-result" class="result-box">Esperando ejecución...</div>
-            </div>
-            
-            <div class="tab-content hidden" id="tab-flujo">
-                <h3>Flujo Máximo (Ford-Fulkerson)</h3>
-                <p style="font-size: 0.85rem; color: #888; margin-bottom: 10px;">Calcula el flujo máximo de ataques desde el caso inicial hasta el último caso detectado.</p>
-                <button id="run-flujo-btn">Calcular Flujo Máximo</button>
-                <div id="flujo-result" class="result-box">Esperando ejecución...</div>
-            </div>
-            
-            <button id="close-graph-modal" style="margin-top: 20px; width: 100%; border-color: var(--secondary-neon); color: var(--secondary-neon);">Cerrar Panel</button>
-        </div>
-    </div>
+
+    <!-- EVIDENCE VIEWER -->
     <div id="evidence-viewer" class="hidden">
         <div class="viewer-content">
             <span id="close-viewer">&times;</span>
-            <div id="dynamic-post" class="hidden"></div>
-            <div id="instagram-dm" class="hidden"></div>
             <img id="viewer-img" src="" alt="Evidence">
             <p id="viewer-caption"></p>
         </div>
     </div>
 
-    <script src="js/GraphAlgorithms.js"></script>
-    <script>
-        class CaseNode { constructor(d) { this.caseId = d.caseId; this.type = d.type; this.evidence = d.evidence; this.law = d.law; this.penalty = d.penalty; this.gravity = d.gravity; this.height = 1; this.left = null; this.right = null; } }
-        class AVLTree { constructor() { this.root = null; } getHeight(n) { return n ? n.height : 0; } getBalanceFactor(n) { return n ? this.getHeight(n.left) - this.getHeight(n.right) : 0; } updateHeight(n) { n.height = Math.max(this.getHeight(n.left), this.getHeight(n.right)) + 1; } rotateRight(y) { let x = y.left; let T2 = x.right; x.right = y; y.left = T2; this.updateHeight(y); this.updateHeight(x); return x; } rotateLeft(x) { let y = x.right; let T2 = y.left; y.left = x; x.right = T2; this.updateHeight(x); this.updateHeight(y); return y; } insert(d) { this.root = this._insertNode(this.root, d); return this.root; } _insertNode(n, d) { if (!n) return new CaseNode(d); if (d.gravity < n.gravity) n.left = this._insertNode(n.left, d); else if (d.gravity > n.gravity) n.right = this._insertNode(n.right, d); else return n; this.updateHeight(n); let b = this.getBalanceFactor(n); if (b > 1 && d.gravity < n.left.gravity) return this.rotateRight(n); if (b < -1 && d.gravity > n.right.gravity) return this.rotateLeft(n); if (b > 1 && d.gravity > n.left.gravity) { n.left = this.rotateLeft(n.left); return this.rotateRight(n); } if (b < -1 && d.gravity < n.right.gravity) { n.right = this.rotateRight(n.right); return this.rotateLeft(n); } return n; } getInOrder() { const r = []; this._inOrder(this.root, r); return r; } _inOrder(n, r) { if (n) { this._inOrder(n.left, r); r.push(n); this._inOrder(n.right, r); } } }
-        class VisualTree { constructor(c) { this.canvas = document.getElementById(c); this.ctx = this.canvas.getContext('2d'); this.nodeRadius = 25; this.verticalSpacing = 80; this.resize(); } resize() { this.canvas.width = this.canvas.parentElement.clientWidth; this.canvas.height = this.canvas.parentElement.clientHeight; } clear() { this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); } draw(t) { this.clear(); if (t && t.root) this._drawNode(t.root, this.canvas.width / 2, 60, this.canvas.width / 4); } _drawNode(n, x, y, o) { if (!n) return; this.ctx.strokeStyle = '#00f2ff'; this.ctx.lineWidth = 2; this.ctx.setLineDash([5, 5]); if (n.left) { this.ctx.beginPath(); this.ctx.moveTo(x, y); this.ctx.lineTo(x - o, y + this.verticalSpacing); this.ctx.stroke(); this._drawNode(n.left, x - o, y + this.verticalSpacing, o / 2); } if (n.right) { this.ctx.beginPath(); this.ctx.moveTo(x, y); this.ctx.lineTo(x + o, y + this.verticalSpacing); this.ctx.stroke(); this._drawNode(n.right, x + o, y + this.verticalSpacing, o / 2); } this.ctx.setLineDash([]); this.ctx.shadowBlur = 15; this.ctx.shadowColor = '#00f2ff'; this.ctx.fillStyle = '#14181e'; this.ctx.beginPath(); this.ctx.arc(x, y, this.nodeRadius, 0, Math.PI * 2); this.ctx.fill(); this.ctx.strokeStyle = '#00f2ff'; this.ctx.lineWidth = 3; this.ctx.stroke(); this.ctx.shadowBlur = 0; this.ctx.fillStyle = '#e0e6ed'; this.ctx.font = 'bold 12px JetBrains Mono'; this.ctx.textAlign = 'center'; this.ctx.textBaseline = 'middle'; this.ctx.fillText(`ID:${n.caseId}`, x, y); const h = 180 - (n.gravity * 15); this.ctx.strokeStyle = `hsl(${h}, 100%, 50%)`; this.ctx.lineWidth = 5; this.ctx.beginPath(); this.ctx.arc(x, y, this.nodeRadius - 2, 0, Math.PI * 2); this.ctx.stroke(); } }
+    <!-- SCRIPT LOADING -->
+    <script src="js/data/missions.js"></script>
+    <script src="js/model/tree.js"></script>
+    <script src="js/model/graph.js"></script>
+    <script src="js/view/GraphRenderer.js"></script>
+    <script src="js/view/UIRenderer.js"></script>
+    <script src="js/sound/SoundController.js"></script>
+    <script src="js/controller/GameController.js"></script>
+    <script src="js/main.js"></script>
 
-        const LEVELS = [
-            { id: 1, title: "Nivel 1 - Capturas", situation: "Valeria recibe ofensas constantes que dañan su honor.", crime: "Injuria", law: "Art. 220 CP", penalty: "Multa.", gravity: 3, caseId: 300, evidence: ["Captura ofensiva"], image: ["chat_bullying_screenshot.png", "ataque-falso-4.png", "ataque-falso-3.png", "ataque-falso-2.png", "ataque-falso-1.png"], options: ["Injuria", "Calumnia", "Amenaza", "Acoso", "Hostigamiento", "Daño"], feedback: "Se refiere a las ofensas que deshonran a alguien directamente afectando su buen nombre (Art. 220)." },
-            { id: 2, title: "Nivel 2 - El Rumor", situation: "Post aseguran que Valeria tiene algo con el profesor de matemáticas.", crime: "Calumnia", law: "Art. 221 CP", penalty: "Sanciones legales.", gravity: 5, caseId: 500, evidence: ["Post IG @Chismes_Baq"], image: "valeria_pick1.jpeg", options: ["Calumnia", "Injuria", "Difamación", "Falso Testimonio", "Fraude", "Acceso Abusivo"], feedback: "Imputar falsamente una conducta delictiva o deshonrosa a alguien (Art. 221)." },
-            { id: 3, title: "Nivel 3 - Suplantación", situation: "Perfil falso usa sus fotos para insultar.", crime: "Suplantación", law: "Ley 1273 - Art. 269F", penalty: "Prisión.", gravity: 8, caseId: 800, evidence: ["Perfil falso"], image: ["valeria_pick2.jpeg", "valeria_pick3.jpeg"], options: ["Suplantación", "Hurto", "Estafa", "Acceso Abusivo", "Falsedad", "Agravada"], feedback: "Utilizar la identidad de otro sin su consentimiento para cometer actos ilícitos (Ley 1273)." },
-            { id: 4, title: "Nivel 4 - Ataque", situation: "Ataque coordinado desde muchas cuentas.", crime: "Hostigamiento", law: "Ley 1482 - Art. 134B", penalty: "Penal.", gravity: 10, caseId: 1000, evidence: ["Bandeja de DMs"], image: ["foto_hostigamiento.jpeg"], options: ["Hostigamiento", "Amenazas", "Acoso Colectivo", "Ciberbullying", "Intimidación", "Extorsión"], feedback: "Conducta sistemática y coordinada que busca intimidar, asediar y degradar repetidamente." }
-        ];
-        // Merge complete. Preservation of PRO UI logic ensured.
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const sounds = {
-                correct: new Audio('assets/sound_correct.mp3'),
-                incorrect: new Audio('assets/sound_incorrect.mp3'),
-                nextLevel: new Audio('assets/sound_next.mp3'),
-                start: new Audio('assets/sound_start.mp3'),
-                finish: new Audio('assets/sound_finish.mp3'),
-                analyze: new Audio('assets/sound_analyze.mp3'),
-                manual: new Audio('assets/sound_manual.mp3'),
-                menuOpen: new Audio('assets/menu_open.mp3'),
-                menuClose: new Audio('assets/menu_close.mp3'),
-                proof: new Audio('assets/sound_proof.mp3')
-            };
-            Object.values(sounds).forEach(s => s.volume = 0.5);
-            function playSound(name) {
-                if (sounds[name]) {
-                    sounds[name].currentTime = 0;
-                    sounds[name].play().catch(e => console.log("Audio play prevented:", e));
-                }
-            }
-
-            const gs = { idx: 0, tree: new AVLTree(), score: 0, ev: [], status: 'INVESTIGATING' };
-            const vt = new VisualTree('tree-canvas');
-            const elements = {
-                li: document.getElementById('level-indicator'), sd: document.getElementById('score-display'), st: document.getElementById('scenario-text'),
-                el: document.getElementById('evidence-list'), lt: document.getElementById('law-text'), dt: document.getElementById('dialog-text'),
-                nb: document.getElementById('next-action-btn'), co: document.getElementById('classification-options'), hb: document.getElementById('help-btn'),
-                mc: document.getElementById('modal-container'), mt: document.getElementById('modal-title'), mb: document.getElementById('modal-body-content'), cm: document.getElementById('close-modal'),
-                evw: document.getElementById('evidence-viewer'), vimg: document.getElementById('viewer-img'), vcap: document.getElementById('viewer-caption'), cv: document.getElementById('close-viewer'), dp: document.getElementById('dynamic-post'),
-                dm: document.getElementById('instagram-dm'),
-                advBtn: document.getElementById('advanced-btn'), graphModal: document.getElementById('graph-modal-container'), closeGraphModal: document.getElementById('close-graph-modal'),
-                tabBtns: document.querySelectorAll('.tab-btn'), tabContents: document.querySelectorAll('.tab-content')
-            };
-            const graphSystem = new CaseGraph();
-
-            function upd() {
-                const l = LEVELS[gs.idx];
-                elements.li.textContent = l.title; elements.sd.textContent = `Karma: ${gs.score}`; elements.st.textContent = l.situation;
-                if (gs.status === 'INVESTIGATING') { elements.lt.textContent = "Buscando pruebas..."; elements.co.classList.add('hidden'); elements.nb.classList.remove('hidden'); elements.nb.textContent = "Analizar Pruebas"; }
-                else if (gs.status === 'CLASSIFYING') { elements.lt.textContent = "¿Bajo qué ley clasificamos esto?"; elements.nb.classList.add('hidden'); elements.co.classList.remove('hidden'); elements.co.innerHTML = ''; [...l.options].sort(() => Math.random() - 0.5).forEach(o => { const b = document.createElement('button'); b.className = 'crime-btn'; b.textContent = o; b.onclick = () => { if (o === l.crime) { playSound('correct'); gs.score += 200; gs.tree.insert({ caseId: l.caseId, type: l.crime, gravity: l.gravity, evidence: l.evidence, law: l.law, penalty: l.penalty }); gs.status = 'DONE'; elements.co.classList.add('hidden'); elements.nb.classList.remove('hidden'); elements.nb.textContent = (gs.idx === 3) ? "Reporte Final" : "Siguiente Nivel"; elements.dt.textContent = "¡Correcto! Se ha insertado en el Árbol AVL."; upd(); } else { playSound('incorrect'); gs.score -= 50; elements.dt.textContent = `Incorrecto. Pista: ${l.feedback}`; } b.blur(); }; elements.co.appendChild(b); }); }
-                elements.el.innerHTML = ''; gs.ev.forEach(e => {
-                    const i = document.createElement('li'); i.className = 'evidence-tag'; i.textContent = e; i.onclick = () => {
-                        playSound('proof'); openEvidenceViewer(e, l);
-                    }; elements.el.appendChild(i);
-                });
-                vt.draw(gs.tree);
-            }
-
-            function openEvidenceViewer(name, level) {
-                if (level.id === 2) {
-                    elements.vimg.classList.add('hidden');
-                    elements.dp.classList.remove('hidden');
-                    elements.dp.innerHTML = `
-                        <!-- Instagram Style Header -->
-                        <div class="post-header" style="padding: 10px 15px; border-bottom: 1px solid #222;">
-                            <div style="width:36px; height:36px; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); border-radius:50%; display:flex; justify-content:center; align-items:center; padding: 2px;">
-                                <div style="width:100%; height:100%; background: #000; border-radius:50%; display:flex; justify-content:center; align-items:center; color:white; font-weight:bold; font-size:0.8rem;">B</div>
-                            </div>
-                            <div style="flex:1;">
-                                <div class="post-user" style="font-size: 0.9rem; display:flex; align-items:center; gap:4px;">
-                                    Chismes_Baq_2026 <span style="color:#0095f6; font-size:0.7rem;">✔</span>
-                                </div>
-                                <div style="font-size:0.7rem; color:#94a3b8;">Barranquilla, Colombia</div>
-                            </div>
-                            <div style="font-weight:bold; color:white;">•••</div>
-                        </div>
-
-                        <!-- Main Post Image -->
-                        <div style="width:100%; aspect-ratio: 1/1; max-height: 70vh; background: #000; position:relative; overflow:hidden;">
-                            <div style="width:100%; height:100%; background:url('assets/${level.image}') no-repeat center top; background-size: cover; filter: brightness(0.9);">
-                            </div>
-                            <div class="falso-stamp">FALSO</div>
-                        </div>
-
-                        <!-- Instagram Icons Overlay -->
-                        <div style="padding: 12px 15px;">
-                            <div style="display:flex; gap:16px; font-size:1.5rem; margin-bottom:10px;">
-                                <span style="color:#ff3040;">❤️</span>
-                                <span>💬</span>
-                                <span>✈️</span>
-                                <span style="margin-left:auto;">🔖</span>
-                            </div>
-                            <div style="font-weight:bold; font-size:0.9rem; margin-bottom:6px;">28,495 reproducciones</div>
-                            
-                            <!-- THE RUMOR (Caption) -->
-                            <div style="font-size:0.95rem; line-height:1.4;">
-                                <span style="font-weight:bold; margin-right:6px;">Chismes_Baq_2026</span> 
-                                😱🔥 ¡ESCÁNDALO TOTAL EN EL COLEGIO! Nos confirman que <strong>Valeria</strong> tiene una "relación especial" con el profesor de matemáticas para no perder la materia. ¿Qué opinan de esto? #EscandaloEscolar #Calumnia #NetCity
-                            </div>
-                            <div style="font-size:0.75rem; color:#94a3b8; margin-top:8px; text-transform:uppercase;">Hace 12 minutos</div>
-                        </div>
-                    `;
-                    elements.vcap.textContent = ``;
-                } else if (level.id === 4) {
-                    elements.vimg.classList.add('hidden');
-                    elements.dp.classList.add('hidden');
-                    elements.dm.classList.remove('hidden');
-                    const dms = [
-                        { u: "Valerie", m: "Que asco eres", c: "#ff3c3c", t: "1 d", i: "👩" },
-                        { u: "Isabella", m: "puta asquerosa", c: "#222", t: "1 d", i: "👧" },
-                        { u: "jp", m: "no te quiero ver más nunca, perra", c: "#222", t: "1 d", i: "👤" },
-                        { u: "Angel", m: "regalada", c: "#222", t: "2 d", i: "🕶️" },
-                        { u: "Jairo", m: "no quiero ser tu, q asco verte asi ese video", c: "#222", t: "2 d", i: "📿" },
-                        { u: "Luis", m: "Tú: Ey lui", c: "#222", t: "2 d", i: "👤", b: true }
-                    ];
-                    elements.dm.innerHTML = `
-                        <div class="dm-header">
-                            <span style="font-weight:bold; color:white; font-size:1.1rem;">Mensajes</span>
-                            <span style="color:var(--text-dim); font-size:0.9rem;">Solicitudes</span>
-                        </div>
-                        <div style="max-height: 450px; overflow-y: auto;">
-                        ${dms.map(d => `
-                            <div class="dm-row" style="background: transparent; margin-bottom: 2px;">
-                                <div class="dm-avatar" style="background:${d.u==='Valerie'?'#444':'#222'}; border-color:#333; font-size:1.4rem;">${d.i}</div>
-                                <div class="dm-info">
-                                    <span class="dm-user" style="font-size:0.95rem;">${d.u}</span>
-                                    <span class="dm-msg" style="color:var(--text-main); font-weight:${d.b?'400':'700'};">
-                                        ${d.m} <span style="color:var(--text-dim); font-weight:400; font-size:0.75rem; margin-left:4px;">${d.t}</span>
-                                    </span>
-                                </div>
-                                ${!d.b ? `<div class="dm-badge urgent" style="width:8px; height:8px; right:10px;"></div>` : `<div class="dm-badge" style="background:#0095f6; right:10px;"></div>`}
-                            </div>
-                        `).join('')}
-                        </div>
-                    `;
-                    elements.vcap.textContent = ``;
-                } else {
-                    elements.dp.classList.add('hidden');
-                    elements.dm.classList.add('hidden');
-                    elements.vimg.classList.remove('hidden');
-                    const imgName = Array.isArray(level.image) ? level.image[Math.floor(Math.random() * level.image.length)] : level.image;
-                    elements.vimg.src = `assets/${imgName}`;
-                    elements.vcap.textContent = `Analizando Captura: ${name}`;
-                }
-                elements.evw.classList.remove('hidden');
-            }
-
-            elements.nb.onclick = () => { if (gs.status === 'DONE') { if (gs.idx < 3) { playSound('nextLevel'); gs.idx++; gs.ev = []; gs.status = 'INVESTIGATING'; upd(); } else { playSound('finish'); final(); } } else { playSound('analyze'); gs.status = 'CLASSIFYING'; gs.ev = LEVELS[gs.idx].evidence; upd(); } };
-            elements.cv.onclick = () => { playSound('menuClose'); elements.evw.classList.add('hidden'); };
-            elements.cm.onclick = () => { playSound('menuClose'); elements.mc.classList.add('hidden'); if (gs.idx === 3 && gs.status === 'DONE') location.reload(); };
-
-            elements.hb.onclick = () => {
-                playSound('manual');
-                elements.mt.textContent = "COMPENDIO LEGAL (18 DELITOS)";
-                elements.mb.innerHTML = `
-                    <div style="text-align: left; max-height: 400px; overflow-y: auto; padding-right: 10px;">
-                        <ul style="list-style-type: '⚖️ '; padding-left: 15px; line-height: 1.8; font-size: 0.95rem;">
-                            <li><strong>1. Injuria:</strong> Ofensas que dañan el honor de una persona.</li>
-                            <li><strong>2. Calumnia:</strong> Acusar falsamente a alguien de un delito.</li>
-                            <li><strong>3. Suplantación:</strong> Usar datos ajenos para fingir ser otro.</li>
-                            <li><strong>4. Hostigamiento:</strong> Acoso repetitivo para causar daño.</li>
-                            <li><strong>5. Amenaza:</strong> Anunciar un mal contra alguien o su familia.</li>
-                            <li><strong>6. Acceso Abusivo:</strong> Entrar a un sistema sin permiso.</li>
-                            <li><strong>7. Difamación:</strong> Dañar la reputación pública de alguien.</li>
-                            <li><strong>8. Falso Testimonio:</strong> Mentir en declaraciones oficiales.</li>
-                            <li><strong>9. Fraude Académico:</strong> Engaño para obtener ventajas.</li>
-                            <li><strong>10. Hurto de Datos:</strong> Robar información digital privada.</li>
-                            <li><strong>11. Estafa:</strong> Engaño para obtener dinero ilegalmente.</li>
-                            <li><strong>12. Falsedad:</strong> Alterar documentos o pruebas digitales.</li>
-                            <li><strong>13. Acoso (Stalking):</strong> Persecución insistente y obsesiva.</li>
-                            <li><strong>14. Daño a la Honra:</strong> Afectar el prestigio social de alguien.</li>
-                            <li><strong>15. Acoso Colectivo:</strong> Ataque grupal coordinado (Mobbing).</li>
-                            <li><strong>16. Ciberbullying:</strong> Intimidación sistemática en redes.</li>
-                            <li><strong>17. Intimidación:</strong> Insuflar miedo constante mediante actos.</li>
-                            <li><strong>18. Extorsión:</strong> Obligar a dar dinero bajo amenaza grave.</li>
-                        </ul>
-                    </div>
-                `;
-                elements.mc.classList.remove('hidden');
-            };
-            function final() { elements.mt.textContent = "REPORTE TÉCNICO VIRTUAL"; elements.mb.innerHTML = gs.tree.getInOrder().map(n => `<div style="margin-bottom:10px; border-bottom:1px solid #444; padding-bottom:5px;"><strong>ID:${n.caseId}:</strong> ${n.type}<br><small>Ley: ${n.law} | Sanción: ${n.penalty}</small></div>`).join(""); elements.mc.classList.remove('hidden'); }
-
-            document.getElementById('start-game-btn').addEventListener('click', () => {
-                playSound('start');
-                document.getElementById('main-menu').classList.add('hidden');
-                document.getElementById('game-container').classList.remove('hidden');
-                vt.resize(); // Must resize canvas after container is un-hidden
-                upd();
-            });
-
-            document.getElementById('main-menu-rules-btn').addEventListener('click', () => {
-                playSound('menuOpen');
-                elements.mt.textContent = "INSTRUCCIONES DE SISTEMA";
-                elements.mb.innerHTML = `
-                    <div style="text-align: left; max-height: 400px; overflow-y: auto; padding-right: 15px; font-size: 1.05rem; line-height: 1.6;">
-                        <ul style="list-style-type: none; padding: 0;">
-                            <li style="margin-bottom: 15px;"><strong>🔍 Misión:</strong> Analiza cada caso y revisa exhaustivamente las pruebas para clasificar correctamente el tipo de delito según el marco legal colombiano.</li>
-                            <li style="margin-bottom: 15px;"><strong>⚖️ Mecánica:</strong> Selecciona el delito usando las opciones. Si es correcto, sumarás <strong>+200 de Karma</strong> y el caso se insertará automáticamente en tu Árbol AVL. Si te equivocas, perderás <strong>-50 de Karma</strong>, ¡pero podrás volver a intentarlo!</li>
-                            <li style="margin-bottom: 15px;"><strong>🌳 Estructura AVL:</strong> Cada caso está ponderado con una "gravedad" entre 1 y 10. El árbol se balanceará dinámicamente en tiempo real a medida que resuelves las situaciones.</li>
-                            <li style="margin-bottom: 15px;"><strong>💡 Consejo:</strong> Utiliza el "Manual Legal" disponible en la interfaz una vez que inicies sesión para repasar los 18 delitos si te sientes perdido.</li>
-                        </ul>
-                    </div>
-                `;
-                elements.mc.classList.remove('hidden');
-            });
-            
-            // Graph Tabs Logic
-            elements.tabBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    elements.tabBtns.forEach(b => b.classList.remove('active'));
-                    elements.tabContents.forEach(c => c.classList.add('hidden'));
-                    btn.classList.add('active');
-                    document.getElementById(btn.dataset.tab).classList.remove('hidden');
-                });
-            });
-
-            // Graph Algorithms Execution
-            elements.advBtn.addEventListener('click', () => {
-                playSound('menuOpen');
-                graphSystem.buildFromTree(gs.tree.root);
-                elements.graphModal.classList.remove('hidden');
-            });
-            elements.closeGraphModal.addEventListener('click', () => {
-                playSound('menuClose');
-                elements.graphModal.classList.add('hidden');
-            });
-
-            document.getElementById('run-bfs-btn').addEventListener('click', () => {
-                if (!graphSystem.rootId) return document.getElementById('recorridos-result').innerHTML = "Grafo vacío. Resuelve casos primero.";
-                const res = graphSystem.bfs(graphSystem.rootId);
-                document.getElementById('recorridos-result').innerHTML = "<strong>Orden BFS:</strong> " + res.map(id => `[Caso ${id}]`).join(" ➔ ");
-            });
-
-            document.getElementById('run-dfs-btn').addEventListener('click', () => {
-                if (!graphSystem.rootId) return document.getElementById('recorridos-result').innerHTML = "Grafo vacío. Resuelve casos primero.";
-                const res = graphSystem.dfs(graphSystem.rootId);
-                document.getElementById('recorridos-result').innerHTML = "<strong>Orden DFS:</strong> " + res.map(id => `[Caso ${id}]`).join(" ➔ ");
-            });
-
-            document.getElementById('run-dijkstra-btn').addEventListener('click', () => {
-                if (!graphSystem.rootId || !graphSystem.furthestLeafId) return document.getElementById('dijkstra-result').innerHTML = "Grafo vacío.";
-                const res = graphSystem.dijkstra(graphSystem.rootId, graphSystem.furthestLeafId);
-                if (!res || res.path.length === 0) {
-                    document.getElementById('dijkstra-result').innerHTML = "Ruta no encontrada.";
-                } else {
-                    document.getElementById('dijkstra-result').innerHTML = `<strong>Ruta Óptima:</strong> ${res.path.map(id => `[Caso ${id}]`).join(" ➔ ")}<br><br><strong>Costo Total (Peso):</strong> ${res.cost}`;
-                }
-            });
-
-            document.getElementById('run-prim-btn').addEventListener('click', () => {
-                if (!graphSystem.rootId) return document.getElementById('prim-result').innerHTML = "Grafo vacío.";
-                const res = graphSystem.prim();
-                let html = "<strong>Conexiones del MST:</strong><br>";
-                let totalCosto = 0;
-                res.forEach(edge => {
-                    html += `Arista (Caso ${edge.from} ↔ Caso ${edge.to}) : Costo ${edge.weight}<br>`;
-                    totalCosto += edge.weight;
-                });
-                html += `<br><strong>Costo Total MST:</strong> ${totalCosto}`;
-                document.getElementById('prim-result').innerHTML = html;
-            });
-
-            document.getElementById('run-flujo-btn').addEventListener('click', () => {
-                if (!graphSystem.rootId || !graphSystem.furthestLeafId) return document.getElementById('flujo-result').innerHTML = "Grafo vacío.";
-                const flujo = graphSystem.fordFulkerson(graphSystem.rootId, graphSystem.furthestLeafId);
-                document.getElementById('flujo-result').innerHTML = `<strong>Flujo Máximo:</strong> ${flujo} unidades desde Caso ${graphSystem.rootId} hasta Caso ${graphSystem.furthestLeafId}.`;
-            });
-        });
-    </script>
 </body>
 
 </html>
