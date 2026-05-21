@@ -1,0 +1,132 @@
+<!-- index.html -->
+<!-- cleaned up from the previous one used that was a huge block of buttons and classes.  - EJ -->
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CASEFILE: REDACTED</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- MAIN MENU -->
+    <div id="main-menu">
+        <h1>CASEFILE:<br><span>REDACTED</span></h1>
+        <p>En un mundo donde la información es el arma más peligrosa, tu deber es descubrir la verdad, clasificar las
+            pruebas y hacer justicia.</p>
+        <div style="display:flex; gap:15px; flex-wrap:wrap; justify-content:center; margin-top:10px;">
+            <button class="start-btn" id="start-btn">Iniciar Investigación</button>
+            <button class="start-btn" id="help-btn" style="font-size:1rem; padding:12px 28px;">Manual Legal</button>
+        </div>
+    </div>
+
+    <!-- GAME CONTAINER -->
+    <div id="game-container" class="hidden">
+        <aside id="detective-hud"> <!-- LEFT HUD -->
+            <header>
+                <h1>CASEFILE: <span>REDACTED</span></h1>
+                <div id="level-indicator">INICIANDO...</div>
+                <div id="score-display">Karma: 0</div>
+            </header>
+
+            <section id="case-file"> <!-- Node Info -->
+                <h3>EXPEDIENTE</h3>
+                <div id="scenario-text" class="content">Haz clic en un nodo para analizarlo.</div>
+            </section>
+
+            <section id="evidence-collector"> <!-- Evidence -->
+                <h3>PRUEBAS</h3>
+                <ul id="evidence-list"></ul>
+            </section>
+
+            <section id="legal-actions"> <!-- Legal + Classification -->
+                <h3>ACCIONES LEGALES</h3>
+                <div id="law-text" class="content">Esperando análisis...</div>
+                <div id="classification-options" class="hidden"></div>
+                <button id="next-action-btn" class="hidden" style="width:100%; margin-top:15px;">Analizar
+                    Pruebas</button>
+            </section>
+
+            <div id="hud-controls"> <!-- Bottom HUD -->
+                <button id="run-algo-btn" class="hidden"
+                    style="width:100%; border-color:var(--secondary-neon); color:var(--secondary-neon);">Ejecutar
+                    Algoritmo</button>
+                <div id="quick-nav">
+                    <button id="mission-tracker-btn" title="Progreso de Misiones">☰</button>
+                    <button id="legal-btn" title="Manual Legal">⚖</button>
+                    <button id="report-btn" title="Reporte Final">📋</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CANVAS AREA -->
+        <main id="investigation-area">
+
+            <div id="mission-bar" class="hidden"> <!-- Mission bar -->
+                <span id="mission-title">Misión</span>
+                <span id="mission-instructions"></span>
+            </div>
+
+            <div id="canvas-container"> <!-- Graph canvas -->
+                <canvas id="graph-canvas"></canvas>
+            </div>
+
+            <div id="algo-result-box" class="hidden"></div> <!-- Algorithm results -->
+
+            <div id="interaction-overlay"> <!-- Dialog box -->
+                <div id="dialog-box">
+                    <div id="dialog-text">Bienvenido al sistema.</div>
+                    <button class="icon-btn" id="main-menu-rules-btn" title="Instrucciones">?</button>
+                </div>
+            </div>
+
+            <div id="mission-tracker-sidebar"> <!-- Mission tracker sidebar -->
+                <div id="mission-tracker-header">
+                    <span>PROGRESO</span>
+                    <button class="icon-btn" id="close-tracker-btn">✕</button>
+                </div>
+                <ul id="mission-checklist"></ul>
+                <div id="tracker-hint"></div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- GENERIC MODAL -->
+    <div id="modal-container" class="hidden">
+        <div class="modal">
+            <h2 id="modal-title"></h2>
+            <div id="modal-body-content" style="margin:20px 0;"></div>
+            <button id="close-modal" style="width:100%;">Continuar</button>
+        </div>
+    </div>
+
+    <!-- EVIDENCE VIEWER -->
+    <div id="evidence-viewer" class="hidden">
+        <div class="viewer-content">
+            <span id="close-viewer">&times;</span>
+            <img id="viewer-img" src="" alt="Evidence">
+            <p id="viewer-caption"></p>
+        </div>
+    </div>
+
+    <!-- SCRIPT LOADING -->
+    <script src="js/data/missions.js"></script>
+    <script src="js/model/tree.js"></script>
+    <script src="js/model/graph.js"></script>
+    <script src="js/view/GraphRenderer.js"></script>
+    <script src="js/view/UIRenderer.js"></script>
+    <script src="js/sound/SoundController.js"></script>
+    <script src="js/controller/GameController.js"></script>
+    <script src="js/main.js"></script>
+
+</body>
+
+</html>
