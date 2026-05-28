@@ -12,6 +12,8 @@ class GameController {
         this.ui = new UIRenderer();
         this.sound = new SoundController();
 
+        this.intro = new TransitionManager();
+
         this.score = 0;
         this.state = 'MAIN_MENU';
         this.difficulty = null;
@@ -21,17 +23,119 @@ class GameController {
         this.classifiedBadIds = new Set();
         this.activeNode = null;
         this.completedMissions = new Set();
+
+        // Multiplayer only
+        this.attacks = GAME_CONFIG.mode === 'multiplayer' ? new AttackManager() : null;
     }
 
     // ─────────────────────────────────────────
     // BOOT
 
     init() {
-        this.ui.showMainMenu();
-        this._bindMenuButtons();
-        this._bindSoundEvents();
+        this.intro.init();
+
+        document.addEventListener('intro:complete', () => {
+            this.ui.showMainMenu();
+            this._bindMenuButtons();
+            this._bindSoundEvents();
+
+            if (GAME_CONFIG.mode === 'multiplayer') {
+                this._connectToServer();
+                this._bindNetworkEvents();
+            }
+        });
     }
 
+    // ─────────────────────────────────────────
+    // MULTIPLAYER — server connection + attack reception
+
+    _connectToServer() {
+        const url = `ws://${GAME_CONFIG.serverHost}:${GAME_CONFIG.serverPort}`;
+        NetworkManager.connect(url)
+            .then(() => {
+                console.log('[GameController] Connected to server as detective');
+            })
+            .catch(() => {
+                console.warn('[GameController] Could not connect to server — running offline');
+            });
+    }
+
+    _bindNetworkEvents() {
+        NetworkManager.clearListeners();
+        // Attacker entered our session — show warning in dialog bar
+        NetworkManager.on('ATTACKER_ENTERED', () => {
+            this.ui.showAttackWarning('SYSTEM', '⚠ INTRUSO DETECTADO EN LA RED');
+        });
+
+        // Attacker left
+        NetworkManager.on('ATTACKER_LEFT', () => {
+            this.ui.setDialogText('Intruso ha salido de la sesión.');
+        });
+
+        // Incoming attack — apply to our graph/renderer, then send snapshot
+        NetworkManager.on('INCOMING_ATTACK', (msg) => {
+            if (this.attacks) {
+                this.attacks.applyAttack(
+                    msg.attack,
+                    msg.payload || {},
+                    this.graph,
+                    this.renderer,
+                    this.ui
+                );
+            }
+            // Send snapshot after a short delay so the attack visuals are drawn first
+            setTimeout(() => this._sendSnapshot(), 300);
+        });
+
+        // Game over from attacker timer
+        NetworkManager.on('GAME_OVER', (msg) => {
+            this._triggerGameOver();
+        });
+    }
+
+    _triggerGameOver() {
+        this.ui.showModal(
+            '✗ GAME OVER',
+            `<p style="margin-bottom:20px; color:var(--accent-red);">
+                El atacante agotó el tiempo. La red ha sido comprometida.
+             </p>`,
+            () => {
+                // Return to main menu
+                this.ui.showMainMenu();
+                this.state = 'MAIN_MENU';
+            }
+        );
+        if (this.ui.closeModalBtn) this.ui.closeModalBtn.textContent = 'Volver al Menú';
+    }
+
+    // ─────────────────────────────────────────
+    // SNAPSHOT — sends canvas state to server for attacker to see
+    // Called on: mission complete, incoming attack received
+
+    _sendSnapshot() {
+        if (GAME_CONFIG.mode !== 'multiplayer') return;
+        if (!NetworkManager.isConnected()) return;
+
+        const canvas = document.getElementById('graph-canvas');
+        if (!canvas) return;
+
+        try {
+            const snapshot = canvas.toDataURL('image/jpeg', 0.6); // 0.6 quality keeps size small
+            const mission = MISSIONS[this.missionIndex] || {};
+
+            NetworkManager.send({
+                type: 'SESSION_SNAPSHOT',
+                snapshot,
+                missionIndex: this.missionIndex,
+                missionTitle: mission.title || ''
+            });
+        } catch (e) {
+            // toDataURL can fail on tainted canvas (CORS) — silently ignore
+            console.warn('[GameController] Could not send snapshot:', e.message);
+        }
+    }
+
+    // BINDING EVENTS (for initialization)
     _bindSoundEvents() {
         // Listens for sound requests dispatched by UIRenderer (keeps UIRenderer decoupled)
         document.addEventListener('game:soundRequest', (e) => {
@@ -155,6 +259,11 @@ class GameController {
         this.ui.setHUDState('IDLE');
         this._updateMissionTracker();
 
+        // Register session with server in multiplayer
+        if (GAME_CONFIG.mode === 'multiplayer' && NetworkManager.isConnected()) {
+            NetworkManager.registerSession();
+        }
+
         // Start mission 1
         this.transition('MISSION_1');
     }
@@ -235,7 +344,7 @@ class GameController {
         }
     }
 
-    _onClassificationSubmit(node, selectedLabel) {
+    _onClassificationSubmit(node, selectedLabel) {      // Button used in classifying evidence
         const correct = checkClassification(node, selectedLabel);
 
         if (correct) {
@@ -347,17 +456,23 @@ class GameController {
         });
     }
 
-    _runFinalMission() {            // Replay all algorithms in sequence with sequential animations
+    _runFinalMission() { // Replay all algorithms in sequence with sequential animations
         const bfsOrder = this.graph.bfs(this.graph.sourceId);
+        // Clear any previous highlights/animations
+        this.renderer.clearHighlights();
 
-        this.renderer.animateTraversal(bfsOrder, 250, () => {
+        this.renderer.animateTraversal(bfsOrder, 500, () => {
+            // Clear before next animation
+            this.renderer.clearHighlights();
             const dijkResult = this.graph.dijkstra(this.graph.sinkId, this.graph.sourceId);
             if (dijkResult) {
-                this.renderer.animatePath(dijkResult.path, 250, () => {
+                this.renderer.animatePath(dijkResult.path, 500, () => {
+                    this.renderer.clearHighlights();
                     const mstEdges = this.graph.prim();
-                    this.renderer.animateMST(mstEdges, 250, () => {
+                    this.renderer.animateMST(mstEdges, 500, () => {
+                        this.renderer.clearHighlights();
                         const { maxFlow, flowEdges } = this.graph.fordFulkerson(this.graph.sourceId, this.graph.sinkId);
-                        this.renderer.animateFlow(flowEdges, 250, () => {
+                        this.renderer.animateFlow(flowEdges, 500, () => {
                             this.ui.showAlgoResult(
                                 '¡Red Restaurada!',
                                 `BFS completado · Ruta segura encontrada · Red reconstruida · Flujo máximo: ${maxFlow}`
@@ -390,6 +505,7 @@ class GameController {
         this.completedMissions.add(this.missionIndex);
         this._updateMissionTracker();
         this._addScore(500);
+        this._sendSnapshot(); // snapshot after mission complete so attacker sees progress
 
         const nextIndex = this.missionIndex + 1;
         const hasNext = nextIndex < MISSIONS.length;
@@ -418,7 +534,39 @@ class GameController {
     }
 
     _handleFinalReport() {
-        this.ui.showFinalReport(this.tree);
+        if (GAME_CONFIG.mode === 'multiplayer' && NetworkManager.isConnected()) {
+            NetworkManager.notifyDetectiveWin();
+        }
+
+        // Build the same HTML showFinalReport would, but call showModal directly
+        // so we can pass onClose and guarantee the outro fires on close.
+        const nodes = this.tree.getInOrder();
+        let html = `
+            <p style="margin-bottom:15px; color:var(--text-dim);">
+                Casos clasificados en el Árbol AVL ordenados por gravedad.
+            </p>
+            <hr style="border-color:var(--border-color); margin-bottom:15px;">
+        `;
+        if (nodes.length === 0) {
+            html += '<p>No se clasificaron casos en esta sesión.</p>';
+        } else {
+            nodes.forEach(n => {
+                html += `
+                    <div style="margin-bottom:18px; border-bottom:1px solid #333; padding-bottom:12px;">
+                        <p><strong>ID:</strong> ${n.caseId} &nbsp;|&nbsp; <strong>Nombre:</strong> ${n.name}</p>
+                        <p><strong>Tipo:</strong> ${n.type}</p>
+                        <p><strong>Pruebas:</strong> ${n.evidence.join(', ')}</p>
+                        <p><strong>Ley:</strong> ${n.law}</p>
+                        <p style="color:var(--accent-red)"><strong>Sanción:</strong> ${n.penalty}</p>
+                    </div>
+                `;
+            });
+        }
+
+        this.ui.showModal('REPORTE TÉCNICO FINAL', html, () => {
+            this.state = 'MAIN_MENU';
+            this.ui.showMainMenu();
+        });
     }
 
     // ─────────────────────────────────────────

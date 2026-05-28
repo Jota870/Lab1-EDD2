@@ -48,6 +48,11 @@ class GraphRenderer {
         this._clickCallback = null;
         this._graph = null;
 
+        // Blackout & Mouse tracking state
+        this._blackout = false;
+        this._mouseX = this.canvas.width / 2;
+        this._mouseY = this.canvas.height / 2;
+
         // Bind resize
         this._boundResize = this._resize.bind(this);
         window.addEventListener('resize', this._boundResize);
@@ -81,6 +86,31 @@ class GraphRenderer {
         this._clear();
         this._drawEdges();
         this._drawNodes();
+        if (this._blackout) {
+            this._drawBlackout();
+        }
+    }
+
+    _drawBlackout() {
+        const ctx = this.ctx;
+        const w = this.canvas.width;
+        const h = this.canvas.height;
+
+        ctx.save();
+        const x = this._mouseX;
+        const y = this._mouseY;
+
+        // Create radial gradient around mouse coordinates
+        // Inner radius: 60px (transparent), outer radius: 200px (dark blackout)
+        const grad = ctx.createRadialGradient(x, y, 30, x, y, 130);
+        grad.addColorStop(0, 'rgba(0, 0, 0, 0)');
+        grad.addColorStop(0.4, 'rgba(0, 0, 0, 0.3)');
+        grad.addColorStop(0.8, 'rgba(5, 7, 10, 0.92)');
+        grad.addColorStop(1, 'rgba(5, 7, 10, 0.98)');
+
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
+        ctx.restore();
     }
 
     onNodeClick(callback) {             // Registers clicks.
@@ -412,7 +442,9 @@ class GraphRenderer {
 
         let ringColor = this.COLOR.nodeDefault;
 
-        if (this._highlightPath.includes(node.id)) {
+        if (node.firewalled) {
+            ringColor = '#ff3c3c';
+        } else if (this._highlightPath.includes(node.id)) {
             ringColor = this.COLOR.pathHighlight;
         } else if (this._animVisited.has(node.id)) {
             ringColor = this.COLOR.nodeVisited;
@@ -450,6 +482,8 @@ class GraphRenderer {
         if (node.classified) {
             const shortName = node.name.split(' ')[0]; // show name
             ctx.fillText(shortName.length > 8 ? shortName.slice(0, 7) + '…' : shortName, x, y);
+        } else if (node.firewalled) {
+            ctx.fillText('🔒', x, y);
         } else {
             ctx.fillText(`ID:${node.id}`, x, y);
         }
@@ -473,15 +507,29 @@ class GraphRenderer {
     _handleHover(e) {
         if (!this._graph) return;
         const node = this._getNodeAtPoint(e);
-        this.canvas.style.cursor = node ? 'pointer' : 'default';
+        if (node) {
+            this.canvas.style.cursor = node.firewalled ? 'not-allowed' : 'pointer';
+        } else {
+            this.canvas.style.cursor = 'default';
+        }
+
+        if (this._blackout) {
+            this.draw();
+        }
+    }
+
+    _updateMousePos(e) {
+        const rect = this.canvas.getBoundingClientRect();
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
+        this._mouseX = (e.clientX - rect.left) * scaleX;
+        this._mouseY = (e.clientY - rect.top) * scaleY;
     }
 
     _getNodeAtPoint(e) {
-        const rect = this.canvas.getBoundingClientRect();
-        const scaleX = this.canvas.width / rect.width;     // Canvas Scaling
-        const scaleY = this.canvas.height / rect.height;
-        const mx = (e.clientX - rect.left) * scaleX;
-        const my = (e.clientY - rect.top) * scaleY;
+        this._updateMousePos(e);
+        const mx = this._mouseX;
+        const my = this._mouseY;
 
         for (const node of this._graph.getAllNodes()) {
             const dx = mx - node.x;

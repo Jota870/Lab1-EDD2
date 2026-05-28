@@ -16,8 +16,9 @@
 
 <body>
 
+    <!-- ══════════════════════════════════════ -->
     <!-- MAIN MENU -->
-    <div id="main-menu">
+    <div id="main-menu" class="hidden">
         <h1>CASEFILE:<br><span>REDACTED</span></h1>
         <p>En un mundo donde la información es el arma más peligrosa, tu deber es descubrir la verdad, clasificar las
             pruebas y hacer justicia.</p>
@@ -27,6 +28,7 @@
         </div>
     </div>
 
+    <!-- ══════════════════════════════════════ -->
     <!-- GAME CONTAINER -->
     <div id="game-container" class="hidden">
         <aside id="detective-hud"> <!-- LEFT HUD -->
@@ -66,6 +68,7 @@
             </div>
         </aside>
 
+        <!-- ══════════════════════════════════════ -->
         <!-- MAIN CANVAS AREA -->
         <main id="investigation-area">
 
@@ -99,7 +102,81 @@
         </main>
     </div>
 
-    <!-- GENERIC MODAL -->
+    <!-- ══════════════════════════════════════ -->
+    <!-- ATTACKER CONTAINER -->
+    <div id="attacker-container" class="hidden">
+        <div id="attacker-layout">
+
+            <!-- ── LEFT SIDEBAR ── -->
+            <aside id="attacker-hud">
+
+                <!-- Logo header — mirrors detective HUD -->
+                <header id="attacker-hud-header">
+                    <h1>CASEFILE: <span>REDACTED</span></h1>
+                    <div id="attacker-mode-label">MODO ATACANTE</div>
+                </header>
+
+                <!-- TOP PANEL: attack buttons -->
+                <section id="attacker-attacks-panel">
+                    <h3>ATAQUES</h3>
+                    <div id="attacker-attack-grid">
+                        <!-- Populated by AttackerUI.renderAttackGrid() -->
+                    </div>
+                </section>
+
+                <!-- MIDDLE PANEL: session info + timer -->
+                <section id="attacker-info-panel">
+                    <h3>SESIÓN ACTIVA</h3>
+                    <div id="attacker-session-label" class="attacker-info-value">---</div>
+                    <div id="attacker-timer" class="attacker-timer-display">02:00</div>
+                    <div id="attacker-log"></div>
+                </section>
+
+                <!-- BOTTOM PANEL: controls -->
+                <section id="attacker-controls-panel">
+                    <h3>CONTROLES</h3>
+                    <div id="attacker-controls-grid">
+                        <button id="attacker-back-btn" title="Volver al lobby">&#8592; LOBBY</button>
+                        <button id="attacker-next-session-btn" title="Siguiente sesión">NEXT &#8594;</button>
+                        <button id="attacker-help-btn" title="Ayuda de ataques">? AYUDA</button>
+                    </div>
+                </section>
+
+            </aside>
+
+            <!-- ── RIGHT MAIN AREA ── -->
+            <main id="attacker-main">
+
+                <!-- LOBBY VIEW: grid of session cards -->
+                <div id="attacker-lobby-view">
+                    <div id="attacker-session-list">
+                        <div class="attacker-empty">
+                            <p>Sin sesiones activas.</p>
+                            <p style="font-size:0.75rem; margin-top:6px;">Esperando detectives...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ACTIVE SESSION VIEW: canvas snapshot + overlay -->
+                <div id="attacker-session-view" class="hidden">
+                    <div id="attacker-canvas-wrapper">
+                        <!-- Snapshot of detective canvas sent on mission complete / attack -->
+                        <img id="attacker-canvas-snapshot" src="" alt="Detective session" />
+                        <!-- Progress bar overlay -->
+                        <div id="attacker-progress-bar">
+                            <div id="attacker-progress-fill"></div>
+                        </div>
+                        <!-- Mission label overlay -->
+                        <div id="attacker-mission-overlay"></div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- SHARED MODAL -->
     <div id="modal-container" class="hidden">
         <div class="modal">
             <h2 id="modal-title"></h2>
@@ -108,6 +185,7 @@
         </div>
     </div>
 
+    <!-- ══════════════════════════════════════ -->
     <!-- EVIDENCE VIEWER -->
     <div id="evidence-viewer" class="hidden">
         <div class="viewer-content">
@@ -117,13 +195,21 @@
         </div>
     </div>
 
+    <!-- ══════════════════════════════════════ -->
     <!-- SCRIPT LOADING -->
     <script src="js/data/missions.js"></script>
     <script src="js/model/tree.js"></script>
     <script src="js/model/graph.js"></script>
     <script src="js/view/GraphRenderer.js"></script>
     <script src="js/view/UIRenderer.js"></script>
+    <script src="js/multiplayer/attacker/view/AttackerUI.js"></script>
     <script src="js/sound/SoundController.js"></script>
+    <script src="js/multiplayer/NetworkManager.js"></script>
+    <script src="js/multiplayer/attacker/model/AttackManager.js"></script>
+    <script src="js/multiplayer/attacker/controller/AttackerController.js"></script>
+    <script src="js/transitions/phases/PhaseP1.js"></script>
+    <script src="js/transitions/phases/PhaseP2.js"></script>
+    <script src="js/transitions/TransitionManager.js"></script>
     <script src="js/controller/GameController.js"></script>
     <script src="js/main.js"></script>
 

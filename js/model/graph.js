@@ -47,7 +47,7 @@ class Graph {
     }
 
     // ─────────────────────────────────────────
-    // ALGORITHM 1 — BFS, Returns ordered list of node IDs visited breadth-first used in Mission 1.
+    // ALGORITHM 1, BFS, Returns ordered list of node IDs visited breadth-first used in Mission 1.
 
     bfs(startId) {
         if (!this.nodes.has(startId)) return [];
@@ -74,7 +74,7 @@ class Graph {
     }
 
     // ─────────────────────────────────────────
-    // ALGORITHM 2 — DFS, Returns ordered list of node IDs visited depth-first used in Mission 1.
+    // ALGORITHM 2, DFS, Returns ordered list of node IDs visited depth-first used in Mission 1.
 
     dfs(startId) {
         if (!this.nodes.has(startId)) return [];
@@ -97,7 +97,7 @@ class Graph {
     }
 
     // ─────────────────────────────────────────
-    // ALGORITHM 3 — DIJKSTRA, Returns { path: number[], cost: number }, as used in Mission 2 to find the lowest weight route.
+    // ALGORITHM 3, DIJKSTRA, Returns { path: number[], cost: number }, as used in Mission 2.
 
     dijkstra(startId, targetId) {
         if (!this.nodes.has(startId) || !this.nodes.has(targetId)) return null;
@@ -153,7 +153,7 @@ class Graph {
     }
 
     // ─────────────────────────────────────────
-    // ALGORITHM 4 — PRIM (MST), Returns array of edges: { from, to, weight }, used in Mission 3 to eliminate all redundant edges.
+    // ALGORITHM 4, PRIM (MST), Returns array of edges: { from, to, weight }, used in Mission 3.
 
     prim() {
         if (this.nodes.size === 0) return [];

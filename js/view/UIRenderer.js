@@ -432,7 +432,7 @@ class UIRenderer {
                 </select>
             </div>
             <button id="run-flow-btn" class="start-btn" style="width:100%; font-size:1.1rem; padding:15px 20px; font-weight:bold;">
-                Calcular Intervención de Flujo Máximo
+                Calcular Camino Minimo
             </button>
         `;
 
@@ -449,6 +449,112 @@ class UIRenderer {
         }
     }
 
+    showDijkstraSelect(nodes, onSelect) {
+        let sourceOptions = '';
+        let sinkOptions = '';
+
+        // Sort nodes by ID for neatness
+        const sortedNodes = [...nodes].sort((a, b) => a.id - b.id);
+
+        sortedNodes.forEach(node => {
+            const role = node.isClean ? 'Limpio' : (node.crimeConfig ? node.crimeConfig.label : 'Sospechoso');
+            const label = `ID: ${node.id} - ${node.name} (${role})`;
+
+            // Default selected: suggest source is highest ID or a bad actor, and sink is Valeria (100)
+            const isSourceDefault = !node.isClean ? 'selected' : '';
+            const isSinkDefault = node.id === 100 ? 'selected' : '';
+
+            sourceOptions += `<option value="${node.id}" ${isSourceDefault}>${label}</option>`;
+            sinkOptions += `<option value="${node.id}" ${isSinkDefault}>${label}</option>`;
+        });
+
+        const html = `
+            <p style="color:var(--text-dim); margin-bottom:15px;">
+                Selecciona el <strong>Nodo Origen (Atacante)</strong> y el <strong>Nodo Destino (Víctima)</strong> para calcular el flujo menos dañino en la red:
+            </p>
+            <div style="margin-bottom:15px; text-align:left;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold; color:var(--primary-neon); font-size:0.9rem;">Nodo de Origen (Atacante):</label>
+                <select id="dijkstra-source-select" style="width:100%; padding:10px; background:#1e293b; color:white; border:1px solid var(--border-color); border-radius:6px; font-size:0.9rem;">
+                    ${sourceOptions}
+                </select>
+            </div>
+            <div style="margin-bottom:20px; text-align:left;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold; color:var(--accent-red); font-size:0.9rem;">Nodo de Destino (Víctima / Valeria):</label>
+                <select id="dijkstra-sink-select" style="width:100%; padding:10px; background:#1e293b; color:white; border:1px solid var(--border-color); border-radius:6px; font-size:0.9rem;">
+                    ${sinkOptions}
+                </select>
+            </div>
+            <button id="run-dijkstra-btn" class="start-btn" style="width:100%; font-size:1.1rem; padding:15px 20px; font-weight:bold;">
+                Calcular Intervención de Flujo Máximo
+            </button>
+        `;
+
+        this.showModal('CÁLCULO DE CAMINO MNIMO', html, null);
+
+        const btn = document.getElementById('run-dijkstra-btn');
+        if (btn) {
+            btn.onclick = () => {
+                const srcId = parseInt(document.getElementById('dijkstra-source-select').value);
+                const snkId = parseInt(document.getElementById('dijkstra-sink-select').value);
+                this.closeModal();
+                onSelect(srcId, snkId);
+            };
+        }
+    }
+
+    showFinalSelect(nodes, onSelect) {
+        let sourceOptions = '';
+        let sinkOptions = '';
+
+        // Sort nodes by ID for neatness
+        const sortedNodes = [...nodes].sort((a, b) => a.id - b.id);
+
+        sortedNodes.forEach(node => {
+            const role = node.isClean ? 'Limpio' : (node.crimeConfig ? node.crimeConfig.label : 'Sospechoso');
+            const label = `ID: ${node.id} - ${node.name} (${role})`;
+
+            // Default selected: suggest source is highest ID or a bad actor, and sink is Valeria (100)
+            const isSourceDefault = !node.isClean ? 'selected' : '';
+            const isSinkDefault = node.id === 100 ? 'selected' : '';
+
+            sourceOptions += `<option value="${node.id}" ${isSourceDefault}>${label}</option>`;
+            sinkOptions += `<option value="${node.id}" ${isSinkDefault}>${label}</option>`;
+        });
+
+        const html = `
+            <p style="color:var(--text-dim); margin-bottom:15px;">
+                Selecciona el <strong>Nodo Origen (Atacante)</strong> y el <strong>Nodo Destino (Víctima)</strong> para restaurar la red:
+            </p>
+            <div style="margin-bottom:15px; text-align:left;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold; color:var(--primary-neon); font-size:0.9rem;">Nodo de Origen (Atacante):</label>
+                <select id="final-source-select" style="width:100%; padding:10px; background:#1e293b; color:white; border:1px solid var(--border-color); border-radius:6px; font-size:0.9rem;">
+                    ${sourceOptions}
+                </select>
+            </div>
+            <div style="margin-bottom:20px; text-align:left;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold; color:var(--accent-red); font-size:0.9rem;">Nodo de Destino (Víctima / Valeria):</label>
+                <select id="final-sink-select" style="width:100%; padding:10px; background:#1e293b; color:white; border:1px solid var(--border-color); border-radius:6px; font-size:0.9rem;">
+                    ${sinkOptions}
+                </select>
+            </div>
+            <button id="run-final-btn" class="start-btn" style="width:100%; font-size:1.1rem; padding:15px 20px; font-weight:bold;">
+                Restaurar Red Final
+            </button>
+        `;
+
+        this.showModal('RESTAURAR RED FINAL', html, null);
+
+        const btn = document.getElementById('run-final-btn');
+        if (btn) {
+            btn.onclick = () => {
+                const srcId = parseInt(document.getElementById('final-source-select').value);
+                const snkId = parseInt(document.getElementById('final-sink-select').value);
+                this.closeModal();
+                onSelect(srcId, snkId);
+            };
+        }
+    }
+
     // ─────────────────────────────────────────
     // FEEDBACK FLASH (classification)
 
@@ -458,5 +564,18 @@ class UIRenderer {
         setTimeout(() => {
             this.lawText.style.color = '';
         }, 2000);
+    }
+
+    // ─────────────────────────────────────────
+    // MULTIPLAYER FUNCTIONS
+
+    showAttackWarning(attackKey, message) {
+        this.dialogText.textContent = `⚠ ATAQUE: ${message}`;
+        this.dialogText.style.color = '#ff3c3c';
+        this.dialogText.style.fontWeight = 'bold';
+        setTimeout(() => {
+            this.dialogText.style.color = '';
+            this.dialogText.style.fontWeight = '';
+        }, 3000);
     }
 }
