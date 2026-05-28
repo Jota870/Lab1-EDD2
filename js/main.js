@@ -9,7 +9,7 @@ const GAME_CONFIG = {
     // Dynamically select the WebSocket server based on environment
     serverUrl: window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
         ? `ws://${window.location.hostname || 'localhost'}:8080`
-        : 'wss://your-backend-app.onrender.com', // <-- REPLACE this URL with your actual deployed Render/Railway backend URL!
+        : 'wss://lab1-edd2.onrender.com',
     passphrase: 'REDACTED'          // backdoor trigger word
 };
 
