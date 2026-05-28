@@ -3,10 +3,18 @@
 // HAS: Tracking for sessions of attackers and detectives, and connections between clients.
 // Run with: node server.js
 
+const http = require('http');
 const WebSocket = require('ws');
 
-const PORT = 8080;
-const wss = new WebSocket.Server({ port: PORT });
+const PORT = process.env.PORT || 8080;
+
+// Create an HTTP server to satisfy health checks on cloud platforms like Render or Railway.
+const server = http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end('CASEFILE: REDACTED WebSocket Relay Server is active and running.');
+});
+
+const wss = new WebSocket.Server({ server });
 
 // ─────────────────────────────────────────
 // STATE
@@ -332,5 +340,7 @@ wss.on('connection', (ws) => {
     });
 });
 
-console.log(`[Server] CASEFILE: REDACTED relay running on ws://localhost:${PORT}`);
-console.log(`[Server] Waiting for connections...`);
+server.listen(PORT, () => {
+    console.log(`[Server] CASEFILE: REDACTED relay running on port ${PORT}`);
+    console.log(`[Server] Waiting for connections...`);
+});

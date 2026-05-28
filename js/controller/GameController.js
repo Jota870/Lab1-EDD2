@@ -50,7 +50,7 @@ class GameController {
     // MULTIPLAYER — server connection + attack reception
 
     _connectToServer() {
-        const url = `ws://${GAME_CONFIG.serverHost}:${GAME_CONFIG.serverPort}`;
+        const url = GAME_CONFIG.serverUrl || `ws://${GAME_CONFIG.serverHost}:${GAME_CONFIG.serverPort}`;
         NetworkManager.connect(url)
             .then(() => {
                 console.log('[GameController] Connected to server as detective');

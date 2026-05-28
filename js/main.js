@@ -6,6 +6,10 @@ const GAME_CONFIG = {
     mode: 'multiplayer', // 'singleplayer' | 'multiplayer'
     serverHost: window.location.hostname || 'localhost',  // dynamic host
     serverPort: 8080,
+    // Dynamically select the WebSocket server based on environment
+    serverUrl: window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
+        ? `ws://${window.location.hostname || 'localhost'}:8080`
+        : 'wss://your-backend-app.onrender.com', // <-- REPLACE this URL with your actual deployed Render/Railway backend URL!
     passphrase: 'REDACTED'          // backdoor trigger word
 };
 

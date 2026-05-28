@@ -328,7 +328,7 @@ class AttackerController {
 
     _connect() {
         this.transition('CONNECTING');
-        const serverUrl = `ws://${GAME_CONFIG.serverHost}:${GAME_CONFIG.serverPort}`;
+        const serverUrl = GAME_CONFIG.serverUrl || `ws://${GAME_CONFIG.serverHost}:${GAME_CONFIG.serverPort}`;
 
         NetworkManager.connect(serverUrl)
             .then(() => this.transition('LOBBY'))
